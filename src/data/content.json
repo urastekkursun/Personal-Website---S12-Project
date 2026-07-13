@@ -1,0 +1,102 @@
+{
+  "nav": {
+    "darkMode": { "tr": "KARANLIK MOD", "en": "DARK MODE" },
+    "lightMode": { "tr": "AYDINLIK MOD", "en": "LIGHT MODE" },
+    "langTarget": { "tr": "SWITCH TO", "en": "TÜRKÇE'YE" },
+      "langAction": { "tr": "ENGLISH", "en": "GEÇ" }
+  },
+  "hero": {
+    "greeting": { "tr": "Merhaba!", "en": "Hi!" },
+    "introBefore": { "tr": "Ben", "en": "I'm" },
+    "name": { "tr": "Uras", "en": "Uras" },
+    "introAfter": {
+      "tr": "Fullstack geliştiriciyim. Sağlam ve ölçeklenebilir frontend ürünler tasarlıyorum. Hadi tanışalım!",
+      "en": "I'm a fullstack developer. I craft solid and scalable frontend products. Let's meet!"
+    },
+    "currentlyBefore": { "tr": "Şu anda", "en": "Currently studying in the" },
+    "currentlyHighlight": { "tr": "Workintech Fullstack", "en": "Workintech Fullstack" },
+    "currentlyAfter": { "tr": "programında eğitim alıyorum.", "en": "program." },
+    "inviteText": { "tr": "Benimle iletişime geçmek için:", "en": "Reach out to me:" },
+    "email": { "tr": "uras@example.com", "en": "uras@example.com" }
+  },
+  "skills": {
+    "title": { "tr": "Yetenekler", "en": "Skills" },
+    "items": [
+      { "id": "js", "name": { "tr": "JAVASCRIPT", "en": "JAVASCRIPT" } },
+      { "id": "react", "name": { "tr": "REACT", "en": "REACT" } },
+      { "id": "redux", "name": { "tr": "REDUX", "en": "REDUX" } },
+      { "id": "node", "name": { "tr": "NODE", "en": "NODE" } },
+      { "id": "vscode", "name": { "tr": "VS CODE", "en": "VS CODE" } },
+      { "id": "figma", "name": { "tr": "FIGMA", "en": "FIGMA" } }
+    ]
+  },
+  "profile": {
+    "title": { "tr": "Profil", "en": "Profile" },
+    "basicInfo": { "tr": "Temel Bilgiler", "en": "Basic Information" },
+    "birthDateLabel": { "tr": "Doğum tarihi", "en": "Birth date" },
+    "birthDate": { "tr": "—", "en": "—" },
+    "cityLabel": { "tr": "İkamet Şehri", "en": "City" },
+    "city": { "tr": "İzmir", "en": "İzmir" },
+    "eduLabel": { "tr": "Eğitim Durumu", "en": "Education" },
+    "edu": {
+      "tr": "Workintech Fullstack Programı, devam ediyor",
+      "en": "Workintech Fullstack Program, in progress"
+    },
+    "roleLabel": { "tr": "Tercih Ettiği Rol", "en": "Preferred Role" },
+    "role": { "tr": "Fullstack, Frontend", "en": "Fullstack, Frontend" },
+    "aboutTitle": { "tr": "Hakkımda", "en": "About me" },
+    "aboutP1": {
+      "tr": "Workintech Fullstack programında eğitimime devam ediyorum ve öğrendiğim her konuyu bu projede bir araya getirmeye çalışıyorum.",
+      "en": "I'm currently studying in the Workintech Fullstack program, and I try to bring together everything I've learned in this project."
+    },
+    "aboutP2": {
+      "tr": "Frontend geliştirme, oyun tasarımı ve dijital ürünler üzerine çalışmayı seviyorum. Yeni teknolojiler öğrenmeye her zaman açığım.",
+      "en": "I enjoy frontend development, game design and building digital products. I'm always open to learning new technologies."
+    }
+  },
+  "projects": {
+    "title": { "tr": "Projeler", "en": "Projects" },
+    "viewGithub": { "tr": "Github'da Gör", "en": "View on Github" },
+    "goToApp": { "tr": "Uygulamaya Git", "en": "Go to app" },
+    "items": [
+      {
+        "id": 1,
+        "name": { "tr": "Random Jokes", "en": "Random Jokes" },
+        "description": {
+          "tr": "Kullanıcıya rastgele İngilizce şakalar gösteren, React Router ile sayfalar arası geçiş yapılan bir uygulama.",
+          "en": "An app that shows random jokes to the user, with page transitions handled via React Router."
+        },
+        "tags": ["react", "vercel", "axios", "router"],
+        "github": "https://github.com/",
+        "app": "https://vercel.com/"
+      },
+      {
+        "id": 2,
+        "name": { "tr": "Are You Bored?", "en": "Are You Bored?" },
+        "description": {
+          "tr": "Kullanıcıya rastgele aktivite önerileri sunan, Redux ile durum yönetimi yapılan bir uygulama.",
+          "en": "An app that suggests random activities to the user, with state managed via Redux."
+        },
+        "tags": ["react", "redux", "axios", "router", "vercel"],
+        "github": "https://github.com/",
+        "app": "https://vercel.com/"
+      }
+    ]
+  },
+  "toast": {
+    "loading": { "tr": "Dil değiştiriliyor...", "en": "Switching language..." },
+    "success": { "tr": "Dil güncellendi.", "en": "Language updated." },
+    "error": {
+      "tr": "Sunucuya ulaşılamadı, dil yine de değiştirildi.",
+      "en": "Could not reach server, language changed anyway."
+    }
+  },
+  "footer": {
+    "title1": { "tr": "Bir sonraki ürününde", "en": "Let's work together on" },
+    "title2": { "tr": "birlikte çalışalım.", "en": "your next product." },
+    "github": { "tr": "Github", "en": "Github" },
+    "blog": { "tr": "Kişisel Blog", "en": "Personal Blog" },
+    "linkedin": { "tr": "Linkedin", "en": "Linkedin" },
+    "email": { "tr": "E-posta", "en": "Email" }
+  }
+}
