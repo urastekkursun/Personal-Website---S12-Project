@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState,useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -28,41 +28,28 @@ export function LanguageProvider({ children }) {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const changeLanguage = async (nextLang) => {
-    if (nextLang === lang) return;
+  const changeLanguage = useCallback(async (nextLang) => {
+  setStatus("loading");
+  try {
+    await api.post("/workintech", { language: nextLang });
+    setStatus("success");
+  } catch (error) {
+    console.error("Dil değişimi API isteği başarısız oldu:", error);
+    setStatus("error");
+  } finally {
+    setLang(nextLang);
+  }
+}, [setLang]);
 
-    const messages = localize(content.toast, nextLang);
-    setStatus("loading");
+const toggleLanguage = useCallback(
+  () => changeLanguage(lang === "tr" ? "en" : "tr"),
+  [lang, changeLanguage]
+);
 
-    const toastId = toast.loading(messages.loading);
-
-    try {
-      // Dil değişimini dış bir servise (reqres.in) bildiriyoruz.
-      await api.post("/workintech", { language: nextLang });
-      setStatus("success");
-      toast.update(toastId, {
-        render: messages.success,
-        type: "success",
-        isLoading: false,
-        autoClose: 3000,
-      });
-    } catch (error) {
-      console.error("Dil değişimi API isteği başarısız oldu:", error);
-      setStatus("error");
-      toast.update(toastId, {
-        render: messages.error,
-        type: "error",
-        isLoading: false,
-        autoClose: 4000,
-      });
-    } finally {
-      setLang(nextLang);
-    }
-  };
-
-  const toggleLanguage = () => changeLanguage(lang === "tr" ? "en" : "tr");
-
-  const value = { lang, t, status, toggleLanguage };
+const value = useMemo(
+  () => ({ lang, t, status, toggleLanguage }),
+  [lang, t, status, toggleLanguage]
+);
 
   return (
     <LanguageContext.Provider value={value}>
