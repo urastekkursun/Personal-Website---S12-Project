@@ -10,8 +10,8 @@
     "introBefore": { "tr": "Ben", "en": "I'm" },
     "name": { "tr": "Uras", "en": "Uras" },
     "introAfter": {
-      "tr": "Full-stack yapay zeka geliştiricisiyim. Akıllı mobil uygulamalar ve etkileşimli oyun deneyimleri üretiyorum. Tanışalım!",
-      "en": "I'm a full-stack AI developer. I build intelligent mobile apps and craft engaging game experiences. Let's meet!"
+      "tr": "Full-stack geliştiricisiyim. Akıllı mobil uygulamalar, web siteleri ve etkileşimli oyun deneyimleri üretiyorum. Tanışalım!",
+      "en": "I'm a full-stack developer. I build intelligent mobile apps, web sites, and craft engaging game experiences. Let's meet!"
     },
     "currentlyBefore": { "tr": "Şu anda", "en": "Currently studying in the" },
     "currentlyHighlight": { "tr": "Workintech Fullstack", "en": "Workintech Fullstack" },
@@ -61,18 +61,18 @@
     "goToApp": { "tr": "Uygulamaya Git", "en": "Go to app" },
     "items": [
       {
-        "id": 1,
-        "name": { "tr": "Random Jokes", "en": "Random Jokes" },
+        "id": "otocore",
+        "name": { "tr": "OtoCore", "en": "OtoCore" },
         "description": {
-          "tr": "Kullanıcıya rastgele İngilizce şakalar gösteren, React Router ile sayfalar arası geçiş yapılan bir uygulama.",
-          "en": "An app that shows random jokes to the user, with page transitions handled via React Router."
+          "tr": "Kişisel aracınızın bakım geçmişini ve masraflarını takip etmeniz için geliştirdiğim, Local-First (çevrimdışı) çalışan mobil asistan. Expo SQLite ile cihazda veri saklama ve isteğe bağlı Supabase bulut senkronizasyonu sunar.",
+          "en": "A local-first (offline-capable) mobile assistant I developed to track your vehicle's maintenance history and expenses. It offers data storage on the device with optional cloud synchronization via Supabase."
         },
-        "tags": ["react", "vercel", "axios", "router"],
-        "github": "https://github.com/",
+        "tags": ["React Native", "Expo", "SQLite", "Supabase", "Expo Router"],
+        "github": "https://github.com/urastekkursun/AutoCore",
         "app": "https://vercel.com/"
       },
       {
-        "id": 2,
+        "id": "are-you-bored",
         "name": { "tr": "Are You Bored?", "en": "Are You Bored?" },
         "description": {
           "tr": "Kullanıcıya rastgele aktivite önerileri sunan, Redux ile durum yönetimi yapılan bir uygulama.",

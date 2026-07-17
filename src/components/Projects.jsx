@@ -1,9 +1,10 @@
 import { useLanguage } from "../context/LanguageContext";
 import ProjectCard from "./ProjectCard";
+import otocorephoto from "../assets/otocore.jpg";
 
 const TONES = ["blue", "green"];
 const IMAGES = [
-  "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80",
+  otocorephoto,
   "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80",
 ];
 
