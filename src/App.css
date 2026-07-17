@@ -76,9 +76,9 @@
   width: 160px;
   height: 44px;
   border-radius: 26px;
-  background: #525252;
+  background: #9b9b9b;
   left: -60px;
-  top: 1050px;
+  top: 370px;
 }
 
 [data-theme="dark"] .deco--circle-gray,

@@ -13,7 +13,6 @@ export default function Profile() {
 
   return (
     <section className="profile">
-      <span className="deco deco--pill-gray" aria-hidden="true" />
       <h2 className="section-title">{p.title}</h2>
       <div className="profile__grid">
         <article className="profile__card">

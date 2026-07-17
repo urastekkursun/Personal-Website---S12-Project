@@ -26,6 +26,7 @@ export default function Skills() {
     <section className="skills">
       <span className="deco deco--ring-gray" aria-hidden="true" />
       <span className="deco deco--ring-pink" aria-hidden="true" />
+      <span className="deco deco--pill-gray" aria-hidden="true" />
       <h2 className="section-title">{t.skills.title}</h2>
       <ul className="skills__list">
         {t.skills.items.map((skill) => {
