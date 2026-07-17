@@ -1,5 +1,7 @@
 import { useLanguage } from "../context/LanguageContext";
 import Header from "./Header";
+import urasPhoto from "../assets/uras-hero.jpg";
+import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 
 export default function Hero() {
   const { t } = useLanguage();
@@ -7,7 +9,6 @@ export default function Hero() {
   return (
     <section className="hero">
       <span className="deco deco--circle-gray" aria-hidden="true" />
-      <span className="deco deco--ring-gray" aria-hidden="true" />
       <span className="deco deco--pill-pink" aria-hidden="true" />
 
       <Header />
@@ -22,11 +23,11 @@ export default function Hero() {
           </h1>
 
           <div className="hero__socials" aria-label="Sosyal medya bağlantıları">
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
-              in
+            <a href="https://www.linkedin.com/in/urastekkursun/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                <FaLinkedinIn size={30} />
             </a>
-            <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub">
-              ⌘
+            <a href="https://github.com/urastekkursun" target="_blank" rel="noreferrer" aria-label="GitHub">
+                <FaGithub size={30} />
             </a>
           </div>
 
@@ -43,7 +44,7 @@ export default function Hero() {
 
         <figure className="hero__photo">
           <img
-            src="https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=600&q=80"
+            src={urasPhoto}
             alt={t.hero.name}
             loading="lazy"
           />

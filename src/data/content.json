@@ -10,14 +10,14 @@
     "introBefore": { "tr": "Ben", "en": "I'm" },
     "name": { "tr": "Uras", "en": "Uras" },
     "introAfter": {
-      "tr": "Fullstack geliştiriciyim. Sağlam ve ölçeklenebilir frontend ürünler tasarlıyorum. Hadi tanışalım!",
-      "en": "I'm a fullstack developer. I craft solid and scalable frontend products. Let's meet!"
+      "tr": "Full-stack yapay zeka geliştiricisiyim. Akıllı mobil uygulamalar ve etkileşimli oyun deneyimleri üretiyorum. Tanışalım!",
+      "en": "I'm a full-stack AI developer. I build intelligent mobile apps and craft engaging game experiences. Let's meet!"
     },
     "currentlyBefore": { "tr": "Şu anda", "en": "Currently studying in the" },
     "currentlyHighlight": { "tr": "Workintech Fullstack", "en": "Workintech Fullstack" },
     "currentlyAfter": { "tr": "programında eğitim alıyorum.", "en": "program." },
     "inviteText": { "tr": "Benimle iletişime geçmek için:", "en": "Reach out to me:" },
-    "email": { "tr": "uras@example.com", "en": "uras@example.com" }
+    "email": { "tr": "urastekkursun@gmail.com", "en": "urastekkursun@gmail.com" }
   },
   "skills": {
     "title": { "tr": "Yetenekler", "en": "Skills" },
@@ -27,31 +27,32 @@
       { "id": "redux", "name": { "tr": "REDUX", "en": "REDUX" } },
       { "id": "node", "name": { "tr": "NODE", "en": "NODE" } },
       { "id": "vscode", "name": { "tr": "VS CODE", "en": "VS CODE" } },
-      { "id": "figma", "name": { "tr": "FIGMA", "en": "FIGMA" } }
+      { "id": "figma", "name": { "tr": "FIGMA", "en": "FIGMA" } },
+      { "id": "ts", "name": { "tr": "TYPESCRIPT", "en": "TYPESCRIPT" } }
     ]
   },
   "profile": {
     "title": { "tr": "Profil", "en": "Profile" },
     "basicInfo": { "tr": "Temel Bilgiler", "en": "Basic Information" },
     "birthDateLabel": { "tr": "Doğum tarihi", "en": "Birth date" },
-    "birthDate": { "tr": "—", "en": "—" },
+    "birthDate": { "tr": "03.02.1992", "en": "03.02.1992" },
     "cityLabel": { "tr": "İkamet Şehri", "en": "City" },
     "city": { "tr": "İzmir", "en": "İzmir" },
     "eduLabel": { "tr": "Eğitim Durumu", "en": "Education" },
     "edu": {
-      "tr": "Workintech Fullstack Programı, devam ediyor",
-      "en": "Workintech Fullstack Program, in progress"
+      "tr": "Dokuz Eylül Univ. Kimya, BSc, 2017",
+      "en": "Dokuz Eylül Univ. Chemistry, BSc, 2017"
     },
     "roleLabel": { "tr": "Tercih Ettiği Rol", "en": "Preferred Role" },
-    "role": { "tr": "Fullstack, Frontend", "en": "Fullstack, Frontend" },
+    "role": { "tr": "Full-stack Developer, Mobil Uygulama Geliştiricisi", "en": "Full-stack Developer, Mobile App Developer" },
     "aboutTitle": { "tr": "Hakkımda", "en": "About me" },
     "aboutP1": {
-      "tr": "Workintech Fullstack programında eğitimime devam ediyorum ve öğrendiğim her konuyu bu projede bir araya getirmeye çalışıyorum.",
-      "en": "I'm currently studying in the Workintech Fullstack program, and I try to bring together everything I've learned in this project."
+      "tr": "Workintech Fullstack programında eğitimime devam ediyorum ve öğrendiğim her konuyu bu projede bir araya getirmeye çalışıyorum. Pratik, kullanıcı odaklı araçlar üretmekten ve karmaşık oyun mekaniklerini keşfetmekten keyif alıyorum. İster yerel odaklı bir araç bakım uygulaması tasarlıyor olayım, ister Godot ile bir strateji oyunu üzerinde çalışıyor olayım, problem çözmeyi seviyorum. Yeni teknolojiler öğrenmeye her zaman açığım. ",
+      "en": "I'm currently studying in the Workintech Fullstack program, and I try to bring together everything I've learned in this project. I enjoy building practical, user-focused tools and exploring complex game mechanics. Whether I'm designing a local-first maintenance tracking app or working on a strategy game in Godot, I love solving problems. I'm always open to learning new technologies. "
     },
     "aboutP2": {
-      "tr": "Frontend geliştirme, oyun tasarımı ve dijital ürünler üzerine çalışmayı seviyorum. Yeni teknolojiler öğrenmeye her zaman açığım.",
-      "en": "I enjoy frontend development, game design and building digital products. I'm always open to learning new technologies."
+      "tr": "Kod yazmadığım zamanlarda beni bilim kurgu evrenlerine dalmış ya da arabamın mekaniğiyle uğraşırken bulabilirsiniz.",
+      "en": "When I'm not coding, you can find me diving into sci-fi universes or tinkering with my car's mechanics. "
     }
   },
   "projects": {
