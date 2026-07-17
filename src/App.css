@@ -3,7 +3,7 @@
   position: relative;
 }
 
-/* ---------- Highlight bar (Rectangle2 / Rectangle39 / Rectangle40 mantığı) ---------- */
+/* ---------- Highlight bar  ---------- */
 .highlight-mark {
   position: relative;
   display: inline-block;
@@ -31,7 +31,7 @@
   margin-left: 8px;
 }
 
-/* ---------- Decorative shapes (sayfa süsleri) ---------- */
+/* ---------- (sayfa süsleri) ---------- */
 .deco {
   position: absolute;
   pointer-events: none;
