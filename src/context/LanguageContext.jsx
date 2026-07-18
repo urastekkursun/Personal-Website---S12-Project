@@ -28,19 +28,26 @@ export function LanguageProvider({ children }) {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const changeLanguage = useCallback(async (nextLang) => {
+const changeLanguage = useCallback(async (nextLang) => {
   setStatus("loading");
   try {
     await api.post("/workintech", { language: nextLang });
     setStatus("success");
+    toast.success(
+      nextLang === "tr" ? "Dil Türkçe olarak güncellendi" : "Language updated to English"
+    );
   } catch (error) {
     console.error("Dil değişimi API isteği başarısız oldu:", error);
     setStatus("error");
+    toast.error(
+      nextLang === "tr"
+        ? "Dil güncellenemedi, tekrar deneyin"
+        : "Couldn't update language, please try again"
+    );
   } finally {
     setLang(nextLang);
   }
 }, [setLang]);
-
 const toggleLanguage = useCallback(
   () => changeLanguage(lang === "tr" ? "en" : "tr"),
   [lang, changeLanguage]
