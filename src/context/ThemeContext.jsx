@@ -6,7 +6,6 @@ const ThemeContext = createContext(null);
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useLocalStorage("theme", "light");
 
-  // <body> üzerine data-theme ekleyerek global CSS değişkenlerini tetikliyoruz
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);

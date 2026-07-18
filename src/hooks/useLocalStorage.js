@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
 
-/**
- * localStorage ile senkronize çalışan, değer değiştikçe
- * otomatik olarak kaydeden generic bir state hook'u.
- */
 export default function useLocalStorage(key, initialValue) {
   const [value, setValue] = useState(() => {
     try {
