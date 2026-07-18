@@ -2,11 +2,13 @@ import { useLanguage } from "../context/LanguageContext";
 import ProjectCard from "./ProjectCard";
 import otocorephoto from "../assets/otocore.jpg";
 import hkmmedical from "../assets/hkmmedical.jpg";
+import difod from "../assets/difod.jpg";
 
 const TONES = ["blue", "green"];
 const IMAGES = [
   otocorephoto,
   hkmmedical,
+  difod
 ];
 
 export default function Projects() {
