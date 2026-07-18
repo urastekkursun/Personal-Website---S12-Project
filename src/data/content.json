@@ -72,15 +72,15 @@
         "app": "https://vercel.com/"
       },
       {
-        "id": "are-you-bored",
-        "name": { "tr": "Are You Bored?", "en": "Are You Bored?" },
+        "id": "HKM Medikal",
+        "name": { "tr": "HKM Medikal", "en": "HKM Medical" },
         "description": {
-          "tr": "Kullanıcıya rastgele aktivite önerileri sunan, Redux ile durum yönetimi yapılan bir uygulama.",
-          "en": "An app that suggests random activities to the user, with state managed via Redux."
+          "tr": "Sağlık ve medikal sektöründe hizmet veren HKM Medikal için geliştirilmiş, modern ve kullanıcı dostu kurumsal web arayüzü. Ürün ve hizmetlerin dijital ortamda en iyi şekilde sergilenmesini sağlayan, responsive (tüm cihazlara duyarlı) ve yüksek performanslı bir frontend projesi.",
+          "en": "A modern and user-friendly corporate web interface developed for HKM Medical, which serves the healthcare and medical sectors. It ensures products and services are showcased optimally in the digital environment, featuring a responsive design and high performance."
         },
-        "tags": ["react", "redux", "axios", "router", "vercel"],
-        "github": "https://github.com/",
-        "app": "https://vercel.com/"
+        "tags": ["React", "Tailwind CSS", "Vite", "Vercel"],
+        "github": "https://github.com/urastekkursun/hkmmedikal",
+        "app": "https://hkmmedikal.vercel.app/"
       }
     ]
   },

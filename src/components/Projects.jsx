@@ -1,11 +1,12 @@
 import { useLanguage } from "../context/LanguageContext";
 import ProjectCard from "./ProjectCard";
 import otocorephoto from "../assets/otocore.jpg";
+import hkmmedical from "../assets/hkmmedical.jpg";
 
 const TONES = ["blue", "green"];
 const IMAGES = [
   otocorephoto,
-  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80",
+  hkmmedical,
 ];
 
 export default function Projects() {
