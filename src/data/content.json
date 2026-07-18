@@ -83,7 +83,7 @@
         "app": "https://hkmmedikal.vercel.app/"
       },
       {
-  "id": 3,
+  "id": "3",
   "name": { "tr": "Difod", "en": "Difod" },
   "description": {
     "tr": "Dikili Fotoğraf Derneği (DİFOD) için geliştirilmiş modern, dinamik ve kullanıcı dostu dernek web sitesi...",
