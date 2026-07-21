@@ -5,7 +5,7 @@ Workintech FSWeb Frontend Sprint Challenge kapsamında geliştirilmiş kişisel 
 ## Live Demo
 
 - **Canlı site:** https://fsweb-portfolio.vercel.app _(Vercel deploy sonrası güncelle)_
-- **GitHub:** https://github.com/USERNAME/fsweb-portfolio _(repo oluşturulduktan sonra güncelle)_
+- **GitHub:** https://github.com/urastekkursun/Personal-Website---S12-Project
 
 ## Kullanılan Teknolojiler
 
