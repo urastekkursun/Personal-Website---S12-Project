@@ -6,7 +6,7 @@ import hkmmedical from "../assets/hkmmedical.jpg";
 import difod from "../assets/difod.jpg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const TONES = ["blue", "green"];
+const TONES = ["blue", "green", "red"];
 const IMAGES = [
   otocorephoto,
   hkmmedical,

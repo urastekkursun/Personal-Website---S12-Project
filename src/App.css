@@ -496,8 +496,11 @@
   background: #d9f6f1;
 }
 
+.project-card--red { background: #c65b5b; }
+
 [data-theme="dark"] .project-card--blue,
-[data-theme="dark"] .project-card--green {
+[data-theme="dark"] .project-card--green,
+[data-theme="dark"] .project-card--red {
   background: var(--color-card);
 }
 
