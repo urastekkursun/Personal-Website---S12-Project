@@ -8,8 +8,8 @@ export default function Hero() {
 
   return (
     <section className="hero">
-      <span className="deco deco--circle-gray" aria-hidden="true" />
-      <span className="deco deco--pill-pink" aria-hidden="true" />
+      <span className="deco deco--circle-gray" />
+      <span className="deco deco--pill-pink" />
 
       <Header />
       <div className="hero__content">
@@ -22,11 +22,11 @@ export default function Hero() {
             {t.hero.introAfter}
           </h1>
 
-          <div className="hero__socials" aria-label="Sosyal medya bağlantıları">
-            <a href="https://www.linkedin.com/in/urastekkursun/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+          <div className="hero__socials">
+            <a href="https://www.linkedin.com/in/urastekkursun/" target="_blank" rel="noreferrer">
                 <FaLinkedinIn size={30} />
             </a>
-            <a href="https://github.com/urastekkursun" target="_blank" rel="noreferrer" aria-label="GitHub">
+            <a href="https://github.com/urastekkursun" target="_blank" rel="noreferrer">
                 <FaGithub size={30} />
             </a>
           </div>

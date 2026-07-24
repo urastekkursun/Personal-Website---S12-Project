@@ -8,14 +8,13 @@ export default function Header() {
 
   return (
     <header className="site-header">
-      <div className="avatar-placeholder" aria-hidden="true"></div>
-      <nav className="header-controls" aria-label="Site ayarları">
+      <div className="avatar-placeholder"></div>
+      <nav className="header-controls">
         <div className="theme-toggle-group">
           <button
             type="button"
             className={`theme-toggle ${isDark ? "is-dark" : ""}`}
             onClick={toggleTheme}
-            aria-pressed={isDark}
           >
             <span className="theme-toggle__knob">
             <span className="theme-toggle__dot" />

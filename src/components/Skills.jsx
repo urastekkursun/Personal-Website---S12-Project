@@ -24,9 +24,9 @@ export default function Skills() {
 
   return (
     <section className="skills">
-      <span className="deco deco--ring-gray" aria-hidden="true" />
-      <span className="deco deco--ring-pink" aria-hidden="true" />
-      <span className="deco deco--pill-gray" aria-hidden="true" />
+      <span className="deco deco--ring-gray" />
+      <span className="deco deco--ring-pink" />
+      <span className="deco deco--pill-gray" />
       <h2 className="section-title">{t.skills.title}</h2>
       <ul className="skills__list">
         {t.skills.items.map((skill) => {

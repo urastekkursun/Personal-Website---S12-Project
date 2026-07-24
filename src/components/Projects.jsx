@@ -40,7 +40,6 @@ const visibleProjects = [
       type="button"
       className="carousel-arrow carousel-arrow--prev"
       onClick={goPrev}
-      aria-label="Önceki projeler"
     >
       <FaChevronLeft />
     </button>
@@ -63,7 +62,6 @@ const visibleProjects = [
       type="button"
       className="carousel-arrow carousel-arrow--next"
       onClick={goNext}
-      aria-label="Sonraki projeler"
     >
       <FaChevronRight />
     </button>
