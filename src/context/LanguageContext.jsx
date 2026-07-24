@@ -7,9 +7,7 @@ import { localize } from "../utils/localize";
 
 const LanguageContext = createContext(null);
 
-// reqres.in için merkezi bir axios instance'ı.
-// Görev talimatındaki gibi dil değişiminde POST atıp,
-// dış servisle iletişimi göstermek amacıyla kullanılıyor.
+
 const api = axios.create({
   baseURL: "https://reqres.in/api",
   headers: { "x-api-key": "reqres-free-v1" },
@@ -17,11 +15,7 @@ const api = axios.create({
 
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useLocalStorage("lang", "tr");
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
-
-  // content.json TEK dosya; her alan { tr, en } tutuyor.
-  // localize() bu ağacı, aktif dile göre düz string'lere indirger.
-  // Dil değiştiğinde sadece bu memo yeniden hesaplanır, veri dosyası tek.
+  const [status, setStatus] = useState("idle"); 
   const t = useMemo(() => localize(content, lang), [lang]);
 
   useEffect(() => {
