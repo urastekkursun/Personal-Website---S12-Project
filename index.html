@@ -15,8 +15,8 @@
     X-Frame-Options: DENY, Referrer-Policy: strict-origin-when-cross-origin,
     Permissions-Policy, Strict-Transport-Security, Cross-Origin-Opener-Policy
 
-  CSP'de Google Fonts'a izin verildi (style-src/font-src). Fontları
-  self-host edersen bu iki istisnayı da kaldırabilirsin.
+  Fontlar self-host edildiği için CSP'de artık hiçbir dış origin istisnası
+  yok: style-src, font-src ve connect-src yalnızca 'self'.
   Deploy sonrası doğrulama: https://securityheaders.com
 -->
 <html lang="tr">
@@ -66,12 +66,8 @@
     <meta name="twitter:image" content="https://fsweb-portfolio.vercel.app/og-image.jpg" />
     <meta name="twitter:image:alt" content="Uras Tekkursun'ün portre fotoğrafı" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fontlar self-host ediliyor (src/assets/fonts/), @font-face tanımları
+         src/index.css içinde. Google Fonts'a giden istek kalmadı. -->
 
     <!-- Arama motorları için yapılandırılmış veri -->
     <script type="application/ld+json">

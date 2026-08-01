@@ -1,3 +1,70 @@
+/* ---------- Fontlar (self-host) ----------
+   Google Fonts'tan indirilip repoya alındı. Üç ayrı sorunu birden çözüyor:
+   1) Performans: fonts.googleapis.com + fonts.gstatic.com'a giden 4 istek
+      ve render-blocking CSS round-trip'i ortadan kalktı
+   2) Güvenlik: CSP'den iki dış origin istisnası (style-src/font-src) silindi
+   3) Gizlilik: Google Fonts ziyaretçi IP'sini Google'a taşıyordu — bu
+      Almanya'da 2022'de GDPR ihlali sayıldı (LG München 3 O 17493/20)
+
+   Bunlar DEĞİŞKEN font (variable font) dosyaları: Google 400/500/600/700 için
+   aynı dosyayı sunuyor (checksum'lar birebir aynı çıktı), bu yüzden 14 dosya
+   yerine 4 dosya var ve `font-weight` tek değer değil ARALIK olarak yazılıyor.
+   `latin-ext` alt kümesi Türkçe karakterler (ğ, ş, İ, ...) için gerekli. */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/inter-latin-ext.woff2") format("woff2");
+  /* Alt kümelendi: Google'ın latin-ext'i Vietnamca'dan fonetik alfabeye kadar
+     her şeyi taşıyordu (Inter için 85 kB). Bu aralık Latin Extended-A'nın
+     tamamını (Türkçe ğĞşŞİı dahil, tüm Orta/Doğu Avrupa dilleri) + para birimi
+     sembollerini kapsıyor. unicode-range fontun GERÇEK içeriğiyle birebir
+     eşleşmeli; yoksa tarayıcı burada olmayan bir karakter için bu dosyayı
+     indirip tofu gösterir. */
+  unicode-range: U+0100-017F, U+018F, U+0192, U+01A0-01A1, U+01AF-01B0,
+    U+0218-021B, U+02BB-02BC, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/playfair-latin-ext.woff2") format("woff2");
+  /* Alt kümelendi: Google'ın latin-ext'i Vietnamca'dan fonetik alfabeye kadar
+     her şeyi taşıyordu (Inter için 85 kB). Bu aralık Latin Extended-A'nın
+     tamamını (Türkçe ğĞşŞİı dahil, tüm Orta/Doğu Avrupa dilleri) + para birimi
+     sembollerini kapsıyor. unicode-range fontun GERÇEK içeriğiyle birebir
+     eşleşmeli; yoksa tarayıcı burada olmayan bir karakter için bu dosyayı
+     indirip tofu gösterir. */
+  unicode-range: U+0100-017F, U+018F, U+0192, U+01A0-01A1, U+01AF-01B0,
+    U+0218-021B, U+02BB-02BC, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/playfair-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   --color-bg: #ffffff;
   --color-bg-section: #f4f4f4;
