@@ -24,7 +24,7 @@ hatası yok.
 | `.github/dependabot.yml` | Haftalık npm + GitHub Actions bağımlılık kontrolü |
 | `public/og-image.jpg` | 1200×630 sosyal medya paylaşım görseli |
 | `src/utils/env.js` | Tüm `import.meta.env` okumaları + prod'da susan `logError` |
-| `src/utils/apiClient.js` | Timeout'lu, env'den beslenen axios instance'ı |
+| `src/utils/apiClient.js` | Timeout'lu `fetch` istemcisi (§5.2'de axios'tan geçildi) |
 | `src/components/ErrorBoundary.jsx` | Uygulama çökerse kurtarma ekranı |
 | `src/components/NotFound.jsx` | 404 deneyimi |
 | `src/components/SkipLink.jsx` | Klavye kullanıcısı için "İçeriğe geç" bağlantısı |
@@ -52,7 +52,8 @@ hatası yok.
 | `src/components/Profile.jsx` | `aria-labelledby` |
 | `src/components/Footer.jsx` | `mailto:` artık yeni sekmede açılmıyor, ölü `href="#"` blog linki env'e bağlandı |
 | `src/data/content.json` | Erişilebilirlik ve hata ekranı metinleri (TR/EN) |
-| `src/assets/*.jpg` | Proje görselleri yeniden boyutlandırıldı (aşağıya bak) |
+| `src/assets/*.webp` | Görseller küçültüldü, sonra WebP'ye çevrildi (§5.3) |
+| `src/assets/fonts/` | Self-host edilen Inter + Playfair woff2 dosyaları (§5.1) |
 | `package-lock.json` | `npm audit fix` — postcss güvenlik yaması |
 
 ---
@@ -482,3 +483,115 @@ yapılmadı. 10 MB'lık bir repo pratikte sorun değil.
    silinebilir ve ilk yükleme hızlanır.
 8. **Görselleri modern formata çevirmek.** `.jpg` yerine `.webp`/`.avif` +
    `<picture>` ile 196 KB daha da inebilir.
+
+---
+
+## 5. Performans sprint'i (2 Ağustos 2026)
+
+Ölçülen sonuç — yavaş 4G (1.6 Mbps / 150 ms) + 4× CPU kısıtlama altında, iki
+sürüm aynı anda, baytlar CDP `Network` olaylarıyla sayılarak:
+
+| | Önce (`288fee2`) | Sonra | Fark |
+|---|---|---|---|
+| Toplam transfer | 403 kB | **265 kB** | **−138 kB (%34)** |
+| LCP | 1284 ms | **1024 ms** | −260 ms (%20) |
+| Üçüncü parti istek | 4 | **0** | |
+| JS bundle (gzip) | 99.3 kB | **84.1 kB** | −15.2 kB |
+| CLS | 0.0301 | 0.0288 | ~aynı |
+| axe-core ihlali | 0 | 0 | regresyon yok |
+
+### 6.1 Fontlar self-host edildi
+
+Inter + Playfair Display woff2 dosyaları `src/assets/fonts/`'a alındı,
+`@font-face` tanımları `index.css`'e yazıldı, `index.html`'deki Google Fonts
+`<link>` ve `preconnect`'leri silindi.
+
+İki şey ölçümle ortaya çıktı:
+
+1. **Google değişken font (variable font) sunuyor.** 400/500/600/700 için
+   indirilen 14 dosyanın checksum'ları karşılaştırıldığında yalnızca **4
+   benzersiz dosya** olduğu görüldü. Bu yüzden `font-weight` tek değer değil
+   **aralık** (`400 700`) olarak yazıldı; 14 dosya yerine 4 dosya duruyor.
+   Doğrulandı: 400/500/600/700 farklı genişlikte render ediliyor
+   (451.25 / 455.19 / 459.13 / 463.05 px) — yani gerçekten değişken font.
+
+2. **Google'ın `latin-ext` alt kümesi aşırı büyüktü.** Inter için tek başına
+   85 kB ve içinde Vietnamca'dan fonetik alfabeye kadar her şey vardı; bu
+   sitenin ihtiyacı birkaç Türkçe karakter. `fontTools` ile Latin Extended-A
+   aralığına alt kümelendi:
+
+   | Dosya | Önce | Sonra |
+   |---|---|---|
+   | `inter-latin-ext.woff2` | 85.3 kB | **21.7 kB** (−%74) |
+   | `playfair-latin-ext.woff2` | 21.0 kB | **15.2 kB** (−%27) |
+
+   `unicode-range` de aynı aralığa daraltıldı — **bu kritik**: font dosyasında
+   olmayan bir karakteri `unicode-range` iddia ederse tarayıcı dosyayı indirip
+   tofu gösterir.
+
+   Doğrulandı: sayfadaki tüm ASCII dışı karakterler (Ü ç ö ü ğ İ ı Ş ş) canvas
+   ölçümüyle test edildi, hepsi Inter ile çiziliyor, fallback'e düşen yok.
+   (👋 emoji sistem fontundan geliyor — beklenen davranış.)
+
+**Kazanç:** performans + CSP'den iki dış origin istisnasının kalkması +
+ziyaretçi IP'sinin Google'a gitmemesi (bkz. shores.md §1.3, GDPR).
+
+### 6.2 axios kaldırıldı → `fetch`
+
+`axios` bağımlılığı silindi, `apiClient.js` `fetch` + `AbortSignal.timeout()`
+ile yeniden yazıldı. Ölçülen kazanç: **−15.2 kB gzip**.
+
+**Neden tamamen silmek yerine `fetch`:** shores.md §1.1 üç seçenek sunuyordu.
+A (kod yolunu tamamen sil) önerilmişti ama bootcamp ödevinin API isteği
+gereksinimini geri dönüşsüz olarak yok ederdi. B seçeneği (fetch'e geçmek)
+**aynı 15 kB kazancı** veriyor ve özellik yapılandırıldığında çalışmaya devam
+ediyor — belirsizlik altında geri alınabilir olan tercih edildi.
+
+Doğrulandı: `VITE_API_KEY` tanımlıyken istek gerçekten atılıyor
+(`x-api-key` başlığı gidiyor, 403 dönüyor çünkü anahtar sahte), hata düzgün
+yakalanıyor, dil yine değişiyor. Anahtar boşken ağa hiç çıkılmıyor.
+
+`axios.isAxiosError(e) && e.code === "ECONNABORTED"` yerine
+`e.name === "TimeoutError"` kullanılıyor; `fetch` 4xx/5xx'te reddetmediği için
+`HttpError` sınıfı eklendi.
+
+### 6.3 Görseller WebP'ye çevrildi
+
+4 görsel `cwebp -q 80` ile dönüştürüldü, `.jpg` dosyaları silindi, import'lar
+güncellendi. Disk üzerinde 324.5 kB → 127.0 kB.
+
+`public/og-image.jpg` **bilerek JPEG bırakıldı** — LinkedIn/WhatsApp gibi
+sosyal medya crawler'ları WebP'yi güvenilir işlemiyor.
+
+İlk yüklemedeki etkisi: hero görseli 128.6 kB → 66.1 kB.
+
+### 6.4 Sistem teması dinleniyor
+
+İlk ziyarette `prefers-color-scheme` okunuyor. Kullanıcı toggle'a bastığı an
+tercihi kaydediliyor ve bundan sonra sistem tercihini eziyor.
+
+`useLocalStorage`'a `useState` gibi **lazy initializer** desteği eklendi —
+`matchMedia` yalnızca kayıtlı değer yoksa/geçersizse okunuyor.
+
+Doğrulandı: sistem dark → site dark ✅ · sistem light → site light ✅ ·
+sistem dark + kayıtlı tercih light → site light ✅ (kullanıcı kazanıyor).
+
+### 6.5 CSP sıkılaştırıldı
+
+Fontlar self-host edildiği için dış origin istisnaları silindi:
+
+```diff
+- style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+- font-src 'self' https://fonts.gstatic.com;
++ style-src 'self' 'unsafe-inline';
++ font-src 'self';
++ frame-src 'none'; worker-src 'none'; media-src 'none';
+```
+
+`connect-src`'te `https://reqres.in` **kaldı**, çünkü §6.2'de özellik korundu —
+anahtar tanımlanırsa istek çalışmalı.
+
+`style-src 'unsafe-inline'` hâlâ duruyor (react-toastify runtime'da inline
+stil yazıyor). shores.md §2.1'de ele alınıyor, bu sprint'in kapsamında değildi.
+
+---
