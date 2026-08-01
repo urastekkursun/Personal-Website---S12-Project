@@ -129,17 +129,11 @@
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
+  transition: background var(--transition-base), filter var(--transition-fast);
 }
 
-.theme-toggle__knob {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 15px;
-  height: 16px;
-  border-radius: 50%;
-  background: #ffe86e;
-  transition: transform 0.2s ease;
+.theme-toggle:hover {
+  filter: brightness(1.08);
 }
 
 .theme-toggle__knob {
@@ -190,6 +184,10 @@
   letter-spacing: 0.1em;
   padding: 10px;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity var(--transition-fast);
 }
 
 .lang-switch:disabled {
@@ -197,8 +195,24 @@
   cursor: wait;
 }
 
+/* Dil isteği sürerken dönen küçük gösterge */
+.lang-switch__spinner {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent-text);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .lang-switch__target {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .lang-switch__action {
@@ -257,6 +271,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.hero__socials a:hover {
+  color: var(--color-accent-text);
+  transform: translateY(-2px);
 }
 
 .hero__status,
@@ -268,7 +289,7 @@
 }
 
 .hero__status .highlight-word {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-weight: 600;
 }
 
@@ -401,7 +422,7 @@
 }
 
 .profile__card-title {
-  color: var(--color-accent-2);
+  color: var(--color-accent-text);
   font-family: var(--font-heading);
   font-size: 24px;
   font-weight: 400;
@@ -486,6 +507,19 @@
   padding: 44px 36px;
   display: flex;
   flex-direction: column;
+  transition: transform var(--transition-base), box-shadow var(--transition-base),
+    background var(--transition-base);
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(10, 10, 20, 0.16);
+}
+
+[data-theme="dark"] .project-card:hover,
+[data-theme="dark"] .project-card:focus-within {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
 }
 
 .project-card--blue {
@@ -543,6 +577,22 @@
   border-radius: 12px;
   overflow: hidden;
   aspect-ratio: 500 / 287;
+  /* Görsel yüklenene kadar skeleton parlaması görünür */
+  background: var(--color-skeleton);
+  background-image: linear-gradient(
+    90deg,
+    var(--color-skeleton) 0%,
+    var(--color-skeleton-shine) 50%,
+    var(--color-skeleton) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shine 1.4s ease-in-out infinite;
+}
+
+/* Görsel yüklendiğinde animasyon durur, zemin şeffaflaşır */
+.project-card__image.is-loaded {
+  animation: none;
+  background: none;
 }
 
 .project-card__image img {
@@ -550,6 +600,21 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.project-card__image.is-loaded img {
+  opacity: 1;
+}
+
+@keyframes skeleton-shine {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
 }
 
 .project-card__links {
@@ -566,6 +631,13 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  border-radius: 4px;
+  transition: gap var(--transition-fast), color var(--transition-fast);
+}
+
+.project-card__links a:hover {
+  text-decoration: underline;
+  gap: 10px;
 }
 
 .projects__carousel {
@@ -589,12 +661,24 @@
   justify-content: center;
   cursor: pointer;
   font-size: 16px;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .carousel-arrow:hover {
   background: var(--color-accent);
   color: #fff;
   border-color: var(--color-accent);
+  transform: scale(1.08);
+}
+
+.projects__counter {
+  display: block;
+  text-align: center;
+  margin: 24px 0 0;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
 }
 
 /* ---------- Footer ---------- */
@@ -637,21 +721,159 @@
   line-height: 150%;
 }
 
+.footer__links a {
+  display: inline-block;
+  border-radius: 4px;
+  transition: transform var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+.footer__links a:hover {
+  text-decoration: underline;
+  transform: translateX(2px);
+}
+
 .footer__links a.footer__link--github { color: var(--color-link-github); }
 .footer__links a.footer__link--blog { color: var(--color-text); }
 .footer__links a.footer__link--linkedin { color: var(--color-link-linkedin); }
 .footer__links a.footer__link--email { color: var(--color-link-email); }
 
-/* ---------- Responsive ---------- */
+/* ---------- Hata / 404 fallback ---------- */
+.fallback {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.fallback__inner {
+  margin: auto;
+  padding: 40px 6%;
+  max-width: 560px;
+  text-align: center;
+}
+
+.fallback__code {
+  font-family: var(--font-heading);
+  font-size: clamp(4rem, 14vw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 0 8px;
+  color: var(--color-accent-text);
+}
+
+.fallback__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+
+.fallback__message {
+  font-size: 18px;
+  line-height: 160%;
+  color: var(--color-text-muted);
+  margin: 0 0 28px;
+}
+
+.fallback__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.fallback__button {
+  display: inline-block;
+  border: 2px solid var(--color-accent);
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter var(--transition-fast), transform var(--transition-fast);
+}
+
+.fallback__button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.fallback__button--ghost {
+  background: transparent;
+  color: var(--color-text);
+}
+
+.fallback__details {
+  margin-top: 32px;
+  text-align: left;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.fallback__details pre {
+  overflow-x: auto;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--color-bg-section);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---------- Dil değişimi sürerken ---------- */
+.page[aria-busy="true"] .hero__text,
+.page[aria-busy="true"] .skills__list,
+.page[aria-busy="true"] .profile__grid,
+.page[aria-busy="true"] .projects__grid {
+  animation: content-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes content-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ---------- Responsive ----------
+   Breakpoint'ler: <=640 mobil, 641-960 tablet, >960 masaüstü.
+   Tablet aralığı eksikti: profile grid'inde 200px sabit boşluk ve 48px'lik
+   bölüm başlıkları 768px civarında taşmaya yol açıyordu. */
+
+/* Tablet ve altı */
 @media (max-width: 960px) {
   .site-footer__inner {
     flex-direction: column;
     align-items: flex-start;
   }
 
+  /* `column-reverse` + `align-items: center` birleşince çocuklar içeriğe göre
+     daralıyor ve `.hero__text` 666px'lik max-width'ine kadar açılıp viewport'u
+     taşırıyordu. Dikey düzende çocuklar konteyner genişliğine uysun. */
   .hero__content {
     flex-direction: column-reverse;
+    align-items: stretch;
     text-align: left;
+    padding-top: 24px;
+  }
+
+  .hero__text {
+    flex: 0 1 auto;
+    max-width: 100%;
+  }
+
+  .hero__photo {
+    align-self: center;
+  }
+
+  .hero__greeting {
+    font-size: 24px;
   }
 
    .footer__heading {
@@ -666,26 +888,146 @@
   .deco {
     display: none;
   }
+
+  .skills,
+  .profile,
+  .projects {
+    padding-top: 64px;
+    padding-bottom: 56px;
+  }
+
+  .skills .section-title {
+    font-size: 36px;
+  }
+
+  /* 200px'lik sabit boşluk tablette iki sütunu ekrandan taşırıyordu */
+  .profile__grid {
+    gap: 48px;
+  }
+
+  .skills__list {
+    gap: 24px;
+  }
+
+  /* Tablette iki proje kartı yan yana sığmıyor, kartlar min-content'in altına
+     inemediği için sağdaki carousel oku viewport'un dışına taşıyordu. */
+  .projects__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projects__carousel {
+    gap: 12px;
+  }
 }
 
+/* Mobil */
 @media (max-width: 640px) {
+  .site-header {
+    padding-top: 1.25rem;
+    align-items: flex-start;
+  }
+
   .header-controls {
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 8px;
   }
 
+  .theme-toggle-group {
+    gap: 10px;
+  }
+
+  .header-label,
+  .header-divider,
+  .lang-switch {
+    font-size: 13px;
+  }
+
+  .hero__greeting {
+    font-size: 22px;
+  }
+
+  .hero__heading {
+    line-height: 145%;
+    margin-bottom: 24px;
+  }
+
+  /* Highlight bar'ın negatif offset'i dar ekranda metnin dışına taşıyordu */
+  .highlight-mark::before {
+    left: -8px;
+    right: 0;
+  }
+
+  .highlight-mark--blue::before {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .hero__status,
+  .hero__invite {
+    font-size: 16px;
+  }
+
+  .skills .section-title,
+  .profile .section-title,
+  .projects .section-title {
+    font-size: 28px;
+  }
+
+  .skills__list {
+    gap: 20px;
+  }
+
+  .skill-card,
+  .skill-card__icon {
+    width: 88px;
+  }
+
+  .skill-card__icon {
+    height: 88px;
+  }
+
+  .skill-card__name {
+    font-size: 16px;
+  }
+
+  .profile__card {
+    padding: 24px;
+    box-shadow: 4px 5px 0 rgba(82, 82, 82, 0.5);
+  }
+
+  /* dt/dd grid'i tek sütuna insin */
+  .profile__info-list {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+  }
+
   .profile__info-row {
-    flex-direction: column;
-    gap: 2px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .profile__info-row dt {
+    white-space: normal;
   }
 
   .profile__info-row dd {
     text-align: left;
+    color: var(--color-text-muted);
   }
 
   .project-card {
     padding: 32px 24px;
+  }
+
+  .project-card h3 {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .project-card__links {
+    font-size: 16px;
+    gap: 16px;
   }
 
   .projects__grid {
@@ -701,4 +1043,13 @@
   height: 36px;
   font-size: 13px;
 }
+
+  .footer__links {
+    font-size: 20px;
+  }
+
+  .site-footer {
+    padding-top: 64px;
+    padding-bottom: 72px;
+  }
 }

@@ -3,7 +3,9 @@
     "darkMode": { "tr": "KARANLIK MOD", "en": "DARK MODE" },
     "lightMode": { "tr": "AYDINLIK MOD", "en": "LIGHT MODE" },
     "langTarget": { "tr": "SWITCH TO", "en": "TÜRKÇE'YE" },
-      "langAction": { "tr": "ENGLISH", "en": "GEÇ" }
+      "langAction": { "tr": "ENGLISH", "en": "GEÇ" },
+    "ariaLabel": { "tr": "Site tercihleri", "en": "Site preferences" },
+    "switching": { "tr": "Dil değiştiriliyor", "en": "Switching language" }
   },
   "hero": {
     "greeting": { "tr": "Merhaba!", "en": "Hi!" },
@@ -17,7 +19,20 @@
     "currentlyHighlight": { "tr": "Workintech Fullstack", "en": "Workintech Fullstack" },
     "currentlyAfter": { "tr": "programında eğitim alıyorum.", "en": "program." },
     "inviteText": { "tr": "Benimle iletişime geçmek için:", "en": "Reach out to me:" },
-    "email": { "tr": "urastekkursun@gmail.com", "en": "urastekkursun@gmail.com" }
+    "email": { "tr": "urastekkursun@gmail.com", "en": "urastekkursun@gmail.com" },
+    "photoAlt": {
+      "tr": "Uras Tekkursun'un portre fotoğrafı",
+      "en": "Portrait photo of Uras Tekkursun"
+    },
+    "linkedinLabel": {
+      "tr": "LinkedIn profilim (yeni sekmede açılır)",
+      "en": "My LinkedIn profile (opens in a new tab)"
+    },
+    "githubLabel": {
+      "tr": "GitHub profilim (yeni sekmede açılır)",
+      "en": "My GitHub profile (opens in a new tab)"
+    },
+    "skipToContent": { "tr": "İçeriğe geç", "en": "Skip to content" }
   },
   "skills": {
     "title": { "tr": "Yetenekler", "en": "Skills" },
@@ -59,6 +74,13 @@
     "title": { "tr": "Projeler", "en": "Projects" },
     "viewGithub": { "tr": "Github'da Gör", "en": "View on Github" },
     "goToApp": { "tr": "Uygulamaya Git", "en": "Go to app" },
+    "screenshotAlt": {
+      "tr": "projesinin ekran görüntüsü",
+      "en": "project screenshot"
+    },
+    "prevLabel": { "tr": "Önceki projeler", "en": "Previous projects" },
+    "nextLabel": { "tr": "Sonraki projeler", "en": "Next projects" },
+    "counterBefore": { "tr": "Proje", "en": "Project" },
     "items": [
       {
         "id": "1",
@@ -109,6 +131,22 @@
     "github": { "tr": "Github", "en": "Github" },
     "blog": { "tr": "Kişisel Blog", "en": "Personal Blog" },
     "linkedin": { "tr": "Linkedin", "en": "Linkedin" },
-    "email": { "tr": "E-posta", "en": "Email" }
+    "email": { "tr": "E-posta", "en": "Email" },
+    "newTab": { "tr": "(yeni sekmede açılır)", "en": "(opens in a new tab)" }
+  },
+  "error": {
+    "title": { "tr": "Bir şeyler ters gitti", "en": "Something went wrong" },
+    "message": {
+      "tr": "Beklenmedik bir hata oluştu. Sayfayı yenilemeyi deneyebilirsin.",
+      "en": "An unexpected error occurred. Try reloading the page."
+    },
+    "retry": { "tr": "Tekrar dene", "en": "Try again" },
+    "reload": { "tr": "Sayfayı yenile", "en": "Reload page" },
+    "notFoundTitle": { "tr": "Sayfa bulunamadı", "en": "Page not found" },
+    "notFoundMessage": {
+      "tr": "Aradığın sayfa burada değil. Ana sayfaya dönebilirsin.",
+      "en": "The page you're looking for isn't here. You can go back to the home page."
+    },
+    "goHome": { "tr": "Ana sayfaya dön", "en": "Back to home" }
   }
 }

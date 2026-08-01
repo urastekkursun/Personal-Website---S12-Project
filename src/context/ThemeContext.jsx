@@ -3,11 +3,19 @@ import useLocalStorage from "../hooks/useLocalStorage";
 
 const ThemeContext = createContext(null);
 
+const THEMES = new Set(["light", "dark"]);
+const isValidTheme = (value) => THEMES.has(value);
+
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useLocalStorage("theme", "light");
+  const [theme, setTheme] = useLocalStorage("theme", "light", isValidTheme);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    // Mobil tarayıcıların adres çubuğu rengi tema ile birlikte değişsin.
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute("content", theme === "dark" ? "#14151a" : "#ffffff");
+    }
   }, [theme]);
 
   const toggleTheme = useCallback(() => {

@@ -1,21 +1,20 @@
 import { createContext, useContext, useEffect, useMemo, useState,useCallback } from "react";
-import axios from "axios";
+import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
 import useLocalStorage from "../hooks/useLocalStorage";
 import content from "../data/content.json";
 import { localize } from "../utils/localize";
+import api from "../utils/apiClient";
+import { env, logError } from "../utils/env";
 
 const LanguageContext = createContext(null);
 
-
-const api = axios.create({
-  baseURL: "https://reqres.in/api",
-  headers: { "x-api-key": "reqres-free-v1" },
-});
+const LANGUAGES = new Set(["tr", "en"]);
+const isValidLang = (value) => LANGUAGES.has(value);
 
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useLocalStorage("lang", "tr");
-  const [status, setStatus] = useState("idle"); 
+  const [lang, setLang] = useLocalStorage("lang", "tr", isValidLang);
+  const [status, setStatus] = useState("idle");
   const t = useMemo(() => localize(content, lang), [lang]);
 
   useEffect(() => {
@@ -25,18 +24,25 @@ export function LanguageProvider({ children }) {
 const changeLanguage = useCallback(async (nextLang) => {
   setStatus("loading");
   try {
-    await api.post("/workintech", { language: nextLang });
+    await api.post(env.apiLanguageEndpoint, { language: nextLang });
     setStatus("success");
     toast.success(
       nextLang === "tr" ? "Dil Türkçe olarak güncellendi" : "Language updated to English"
     );
   } catch (error) {
-    console.error("Dil değişimi API isteği başarısız oldu:", error);
+    // Stack trace sadece development'ta konsola düşer.
+    logError("Dil değişimi API isteği başarısız oldu:", error);
     setStatus("error");
+
+    const timedOut = isAxiosError(error) && error.code === "ECONNABORTED";
     toast.error(
       nextLang === "tr"
-        ? "Dil güncellenemedi, tekrar deneyin"
-        : "Couldn't update language, please try again"
+        ? timedOut
+          ? "Sunucu yanıt vermedi, dil yine de değiştirildi"
+          : "Dil sunucuya bildirilemedi, dil yine de değiştirildi"
+        : timedOut
+          ? "The server did not respond, language changed anyway"
+          : "Couldn't notify the server, language changed anyway"
     );
   } finally {
     setLang(nextLang);

@@ -1,16 +1,99 @@
 <!doctype html>
+<!--
+  GÜVENLİK BAŞLIKLARI HAKKINDA NOT
+  --------------------------------
+  Content-Security-Policy, X-Content-Type-Options, Referrer-Policy ve
+  Permissions-Policy gibi başlıklar <meta> ile GÜVENİLİR şekilde
+  uygulanamaz — HTTP response header'ı olarak gönderilmeleri gerekir.
+  Bu yüzden repoda iki hazır config var:
+
+    - vercel.json   -> Vercel deploy'u için `headers` bloğu
+    - netlify.toml  -> Netlify deploy'u için [[headers]] bloğu
+
+  İkisinde de aynı set tanımlı:
+    Content-Security-Policy, X-Content-Type-Options: nosniff,
+    X-Frame-Options: DENY, Referrer-Policy: strict-origin-when-cross-origin,
+    Permissions-Policy, Strict-Transport-Security, Cross-Origin-Opener-Policy
+
+  CSP'de Google Fonts'a izin verildi (style-src/font-src). Fontları
+  self-host edersen bu iki istisnayı da kaldırabilirsin.
+  Deploy sonrası doğrulama: https://securityheaders.com
+-->
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Uras's Personal Website</title>
+
+    <!-- Temel SEO -->
+    <title>Uras Tekkursun — Full-stack Developer</title>
+    <meta
+      name="description"
+      content="Uras Tekkursun'ün kişisel portfolyo sitesi. React, React Native ve Node.js ile web ve mobil uygulamalar geliştiren full-stack developer. Projeler, yetenekler ve iletişim bilgileri."
+    />
+    <meta name="author" content="Uras Tekkursun" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://fsweb-portfolio.vercel.app/" />
+
+    <!-- Tarayıcı arayüzü / ikonlar -->
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/og-image.jpg" />
+
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Uras Tekkursun" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:title" content="Uras Tekkursun — Full-stack Developer" />
+    <meta
+      property="og:description"
+      content="React, React Native ve Node.js ile web ve mobil uygulamalar geliştiren full-stack developer. Projelerime göz at."
+    />
+    <meta property="og:url" content="https://fsweb-portfolio.vercel.app/" />
+    <meta property="og:image" content="https://fsweb-portfolio.vercel.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Uras Tekkursun'ün portre fotoğrafı" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Uras Tekkursun — Full-stack Developer" />
+    <meta
+      name="twitter:description"
+      content="React, React Native ve Node.js ile web ve mobil uygulamalar geliştiren full-stack developer. Projelerime göz at."
+    />
+    <meta name="twitter:image" content="https://fsweb-portfolio.vercel.app/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Uras Tekkursun'ün portre fotoğrafı" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Arama motorları için yapılandırılmış veri -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Uras Tekkursun",
+        "url": "https://fsweb-portfolio.vercel.app/",
+        "image": "https://fsweb-portfolio.vercel.app/og-image.jpg",
+        "jobTitle": "Full-stack Developer",
+        "email": "mailto:urastekkursun@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "İzmir",
+          "addressCountry": "TR"
+        },
+        "sameAs": [
+          "https://github.com/urastekkursun",
+          "https://www.linkedin.com/in/urastekkursun/"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

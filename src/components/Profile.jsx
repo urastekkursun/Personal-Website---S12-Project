@@ -12,8 +12,8 @@ export default function Profile() {
   ];
 
   return (
-    <section className="profile">
-      <h2 className="section-title">{p.title}</h2>
+    <section className="profile" aria-labelledby="profile-title">
+      <h2 className="section-title" id="profile-title">{p.title}</h2>
       <div className="profile__grid">
         <article className="profile__card">
           <h3 className="profile__card-title">{p.basicInfo}</h3>

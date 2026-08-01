@@ -8,8 +8,8 @@ export default function Hero() {
 
   return (
     <section className="hero">
-      <span className="deco deco--circle-gray" />
-      <span className="deco deco--pill-pink" />
+      <span className="deco deco--circle-gray" aria-hidden="true" />
+      <span className="deco deco--pill-pink" aria-hidden="true" />
 
       <Header />
       <div className="hero__content">
@@ -23,11 +23,21 @@ export default function Hero() {
           </h1>
 
           <div className="hero__socials">
-            <a href="https://www.linkedin.com/in/urastekkursun/" target="_blank" rel="noreferrer">
-                <FaLinkedinIn size={30} />
+            <a
+              href="https://www.linkedin.com/in/urastekkursun/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t.hero.linkedinLabel}
+            >
+                <FaLinkedinIn size={30} aria-hidden="true" focusable="false" />
             </a>
-            <a href="https://github.com/urastekkursun" target="_blank" rel="noreferrer">
-                <FaGithub size={30} />
+            <a
+              href="https://github.com/urastekkursun"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t.hero.githubLabel}
+            >
+                <FaGithub size={30} aria-hidden="true" focusable="false" />
             </a>
           </div>
 
@@ -45,8 +55,10 @@ export default function Hero() {
         <figure className="hero__photo">
           <img
             src={urasPhoto}
-            alt={t.hero.name}
-            loading="lazy"
+            alt={t.hero.photoAlt}
+            width="344"
+            height="344"
+            fetchPriority="high"
           />
         </figure>
       </div>

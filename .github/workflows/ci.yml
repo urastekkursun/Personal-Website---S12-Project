@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Aynı branch'e arka arkaya push atılırsa eski run'ı iptal et.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          # .env repo'ya girmediği için CI'da örnek/dummy değerler kullanılıyor.
+          # Gerçek değerler gerekiyorsa GitHub Secrets'a taşı.
+          VITE_API_BASE_URL: https://reqres.in/api
+          VITE_API_LANGUAGE_ENDPOINT: /workintech
+          VITE_API_KEY: reqres-free-v1
+          VITE_API_TIMEOUT_MS: "8000"
+          VITE_SITE_URL: https://fsweb-portfolio.vercel.app
+
+      - name: Upload build output
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      # High/critical açık varsa CI kırmızıya döner.
+      - run: npm audit --audit-level=high

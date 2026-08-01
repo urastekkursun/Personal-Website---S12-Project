@@ -32,19 +32,26 @@ const visibleProjects = [
   items[(currentIndex + 1) % total],
 ];
   return (
-<section className="projects">
-  <h2 className="section-title">{t.projects.title}</h2>
+<section className="projects" aria-labelledby="projects-title">
+  <h2 className="section-title" id="projects-title">{t.projects.title}</h2>
 
   <div className="projects__carousel">
     <button
       type="button"
       className="carousel-arrow carousel-arrow--prev"
       onClick={goPrev}
+      aria-label={t.projects.prevLabel}
+      aria-controls="projects-grid"
     >
-      <FaChevronLeft />
+      <FaChevronLeft aria-hidden="true" focusable="false" />
     </button>
 
-    <div className="projects__grid">
+    <div
+      className="projects__grid"
+      id="projects-grid"
+      aria-live="polite"
+      aria-atomic="false"
+    >
       {visibleProjects.map((project) => {
         const originalIndex = items.findIndex((p) => p.id === project.id);
         return (
@@ -62,10 +69,18 @@ const visibleProjects = [
       type="button"
       className="carousel-arrow carousel-arrow--next"
       onClick={goNext}
+      aria-label={t.projects.nextLabel}
+      aria-controls="projects-grid"
     >
-      <FaChevronRight />
+      <FaChevronRight aria-hidden="true" focusable="false" />
     </button>
   </div>
+
+  <output className="projects__counter" aria-live="polite">
+    {t.projects.counterBefore} {currentIndex + 1}
+    {" / "}
+    {total}
+  </output>
 </section>
   );
 }
