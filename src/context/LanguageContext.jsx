@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState,useCallback } from "react";
-import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
 import useLocalStorage from "../hooks/useLocalStorage";
 import content from "../data/content.json";
 import { localize } from "../utils/localize";
-import api from "../utils/apiClient";
+import { postJson, isTimeoutError } from "../utils/apiClient";
 import { env, isLanguageApiEnabled, logError } from "../utils/env";
 
 const LanguageContext = createContext(null);
@@ -35,7 +34,7 @@ const changeLanguage = useCallback(async (nextLang) => {
 
   setStatus("loading");
   try {
-    await api.post(env.apiLanguageEndpoint, { language: nextLang });
+    await postJson(env.apiLanguageEndpoint, { language: nextLang });
     setStatus("success");
     toast.success(
       nextLang === "tr" ? "Dil Türkçe olarak güncellendi" : "Language updated to English"
@@ -45,7 +44,7 @@ const changeLanguage = useCallback(async (nextLang) => {
     logError("Dil değişimi API isteği başarısız oldu:", error);
     setStatus("error");
 
-    const timedOut = isAxiosError(error) && error.code === "ECONNABORTED";
+    const timedOut = isTimeoutError(error);
     toast.error(
       nextLang === "tr"
         ? timedOut
