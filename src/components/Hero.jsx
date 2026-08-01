@@ -1,6 +1,6 @@
 import { useLanguage } from "../context/LanguageContext";
 import Header from "./Header";
-import urasPhoto from "../assets/uras-hero.jpg";
+import urasPhoto from "../assets/uras-hero.webp";
 import { FaLinkedinIn, FaGithub } from "react-icons/fa";
 
 export default function Hero() {

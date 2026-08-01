@@ -1,9 +1,9 @@
 import { useLanguage } from "../context/LanguageContext";
 import { useState } from "react";
 import ProjectCard from "./ProjectCard";
-import otocorephoto from "../assets/otocore.jpg";
-import hkmmedical from "../assets/hkmmedical.jpg";
-import difod from "../assets/difod.jpg";
+import otocorephoto from "../assets/otocore.webp";
+import hkmmedical from "../assets/hkmmedical.webp";
+import difod from "../assets/difod.webp";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const TONES = ["blue", "green", "red"];
