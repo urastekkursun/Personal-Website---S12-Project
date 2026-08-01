@@ -6,8 +6,17 @@ const ThemeContext = createContext(null);
 const THEMES = new Set(["light", "dark"]);
 const isValidTheme = (value) => THEMES.has(value);
 
+const DARK_QUERY = "(prefers-color-scheme: dark)";
+
+// İlk ziyarette işletim sisteminin tercihini kullan. Kullanıcı toggle'a
+// bastığı an tercihi localStorage'a yazılır ve bundan sonra o kazanır.
+function getSystemTheme() {
+  if (typeof window === "undefined" || !window.matchMedia) return "light";
+  return window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
+}
+
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useLocalStorage("theme", "light", isValidTheme);
+  const [theme, setTheme] = useLocalStorage("theme", getSystemTheme, isValidTheme);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);

@@ -16,7 +16,10 @@ function getStorage() {
 
 /**
  * @param {string} key
- * @param {*} initialValue
+ * @param {* | (() => *)} initialValue
+ *   Değer ya da `useState` gibi lazy initializer fonksiyonu. Fonksiyon
+ *   verilirse yalnızca kayıtlı değer yoksa/geçersizse çağrılır — böylece
+ *   `matchMedia` gibi maliyetli okumalar gereksiz yere yapılmaz.
  * @param {(value: unknown) => boolean} [isValid]
  *   Okunan değeri doğrulayan opsiyonel fonksiyon. Bozuk/beklenmeyen tipteki
  *   veri (ör. elle kurcalanmış `theme: {}`) varsayılana düşer ve temizlenir.
@@ -26,18 +29,21 @@ export default function useLocalStorage(key, initialValue, isValid) {
   validate.current = isValid;
 
   const [value, setValue] = useState(() => {
+    const fallback = () =>
+      typeof initialValue === "function" ? initialValue() : initialValue;
+
     const storage = getStorage();
-    if (!storage) return initialValue;
+    if (!storage) return fallback();
 
     let stored;
     try {
       stored = storage.getItem(key);
     } catch (error) {
       logError(`localStorage okunamadı (${key}):`, error);
-      return initialValue;
+      return fallback();
     }
 
-    if (stored === null) return initialValue;
+    if (stored === null) return fallback();
 
     let parsed;
     try {
@@ -50,7 +56,7 @@ export default function useLocalStorage(key, initialValue, isValid) {
       } catch {
         // temizlik başarısız olsa da varsayılana düşmek yeterli
       }
-      return initialValue;
+      return fallback();
     }
 
     if (typeof isValid === "function" && !isValid(parsed)) {
@@ -60,7 +66,7 @@ export default function useLocalStorage(key, initialValue, isValid) {
       } catch {
         // yoksay
       }
-      return initialValue;
+      return fallback();
     }
 
     return parsed;
