@@ -117,14 +117,6 @@
 }
     ]
   },
-  "toast": {
-    "loading": { "tr": "Dil değiştiriliyor...", "en": "Switching language..." },
-    "success": { "tr": "Dil güncellendi.", "en": "Language updated." },
-    "error": {
-      "tr": "Sunucuya ulaşılamadı, dil yine de değiştirildi.",
-      "en": "Could not reach server, language changed anyway."
-    }
-  },
   "footer": {
     "title1": { "tr": "Bir sonraki ürününde", "en": "Let's work together on" },
     "title2": { "tr": "birlikte çalışalım.", "en": "your next product." },
@@ -135,13 +127,6 @@
     "newTab": { "tr": "(yeni sekmede açılır)", "en": "(opens in a new tab)" }
   },
   "error": {
-    "title": { "tr": "Bir şeyler ters gitti", "en": "Something went wrong" },
-    "message": {
-      "tr": "Beklenmedik bir hata oluştu. Sayfayı yenilemeyi deneyebilirsin.",
-      "en": "An unexpected error occurred. Try reloading the page."
-    },
-    "retry": { "tr": "Tekrar dene", "en": "Try again" },
-    "reload": { "tr": "Sayfayı yenile", "en": "Reload page" },
     "notFoundTitle": { "tr": "Sayfa bulunamadı", "en": "Page not found" },
     "notFoundMessage": {
       "tr": "Aradığın sayfa burada değil. Ana sayfaya dönebilirsin.",

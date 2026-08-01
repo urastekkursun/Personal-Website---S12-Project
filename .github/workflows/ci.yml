@@ -48,9 +48,14 @@ jobs:
           # Gerçek değerler gerekiyorsa GitHub Secrets'a taşı.
           VITE_API_BASE_URL: https://reqres.in/api
           VITE_API_LANGUAGE_ENDPOINT: /workintech
-          VITE_API_KEY: reqres-free-v1
+          VITE_API_KEY: ""
           VITE_API_TIMEOUT_MS: "8000"
-          VITE_SITE_URL: https://fsweb-portfolio.vercel.app
+
+      # index.html'deki inline JSON-LD düzenlenip vercel.json/netlify.toml
+      # güncellenmediyse burada yakalanır — aksi halde CSP bloğu sessizce
+      # bloklardı.
+      - name: CSP hash senkron mu?
+        run: npm run csp:check
 
       - name: Upload build output
         if: matrix.node-version == '22.x'

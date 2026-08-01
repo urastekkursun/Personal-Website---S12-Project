@@ -1,5 +1,32 @@
 node_modules/
 dist/
+
+# --- Ortam değişkenleri ---
 .env
 .env.*
+# `.env.*` kuralı şablonu da yakalıyordu; .env.example repoda DURMALI ki
+# projeyi klonlayan hangi değişkenleri tanımlaması gerektiğini görsün.
+!.env.example
+
+# --- İşletim sistemi / editör artıkları ---
 .DS_Store
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+
+# --- AI ajan dosyaları (uygulamanın çalışması için gerekli değil) ---
+# Claude Code'a verilen prompt/brief dosyaları
+claude-code-prompt.md
+# Kullanıcıya özel yerel ajan ayarları. Not: `.claude/settings.json` ve
+# `CLAUDE.md` takım genelinde paylaşılabilir olduğu için BİLEREK dışlanmadı —
+# paylaşmak istemiyorsan aşağıya `.claude/` ve `CLAUDE.md` ekle.
+.claude/settings.local.json
+.claude/scratchpad/
+.aider*
+.cursorignore
+
+# --- Test / build raporları ---
+coverage/
+*.log

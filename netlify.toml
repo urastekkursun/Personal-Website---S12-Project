@@ -12,14 +12,17 @@
   to = "/index.html"
   status = 200
 
-# NOT: script-src içindeki sha256 hash'i index.html'deki JSON-LD (structured
-# data) bloğuna ait. O bloğu düzenlersen hash'i yeniden üret:
-#   node -e "const f=require('fs'),c=require('crypto');const m=f.readFileSync('index.html','utf8').match(/<script type=\"application\/ld\+json\">([\s\S]*?)<\/script>/);console.log('sha256-'+c.createHash('sha256').update(m[1],'utf8').digest('base64'))"
-# ve vercel.json'daki değeri de güncelle.
+# NOT: script-src içindeki sha256 hash'i index.html'deki inline JSON-LD
+# bloğuna ait ve ELLE DÜZENLENMEMELİ. index.html'i değiştirdikten sonra:
+#
+#   npm run build && npm run csp:sync
+#
+# Bu komut hem bu dosyayı hem vercel.json'ı günceller. CI'da `npm run csp:check`
+# senkron olmayan durumu yakalar (bkz. .github/workflows/ci.yml).
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-8pk/b6OErMQfvhARPjl2ChEZSJomK1cdWQTB5siwYQE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://reqres.in; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-6KbTqVCm9MGU/HEjJGIMwrzxcVWkLpijh6wGAicBzCE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://reqres.in; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"

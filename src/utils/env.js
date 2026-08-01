@@ -20,15 +20,19 @@ function readNumber(key, fallback) {
 }
 
 export const env = {
-  isDev,
   apiBaseUrl: readString("VITE_API_BASE_URL", "https://reqres.in/api"),
   apiLanguageEndpoint: readString("VITE_API_LANGUAGE_ENDPOINT", "/workintech"),
   apiKey: readString("VITE_API_KEY", ""),
   apiTimeoutMs: readNumber("VITE_API_TIMEOUT_MS", 8000),
-  siteUrl: readString("VITE_SITE_URL", "https://fsweb-portfolio.vercel.app"),
   // Boş bırakılırsa footer'daki blog linki hiç render edilmez.
   blogUrl: import.meta.env.VITE_BLOG_URL?.trim() || "",
 };
+
+// Dil değişimi bildirimi opsiyoneldir: anahtar tanımlı değilse istek hiç
+// atılmaz. reqres.in'in eski ücretsiz anahtarı (`reqres-free-v1`) servis
+// tarafında iptal edildi ve her istek 401 dönüyordu; anahtarsız çalışırken
+// kullanıcıya sebepsiz bir hata uyarısı göstermenin anlamı yok.
+export const isLanguageApiEnabled = Boolean(env.apiKey && env.apiBaseUrl);
 
 // Production build'de konsolu kirletmemek (ve stack trace sızdırmamak) için
 // tüm hata loglarını bu fonksiyondan geçir.

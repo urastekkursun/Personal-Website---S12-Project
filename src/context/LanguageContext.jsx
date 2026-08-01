@@ -5,7 +5,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import content from "../data/content.json";
 import { localize } from "../utils/localize";
 import api from "../utils/apiClient";
-import { env, logError } from "../utils/env";
+import { env, isLanguageApiEnabled, logError } from "../utils/env";
 
 const LanguageContext = createContext(null);
 
@@ -22,6 +22,17 @@ export function LanguageProvider({ children }) {
   }, [lang]);
 
 const changeLanguage = useCallback(async (nextLang) => {
+  // API yapılandırılmamışsa ağa hiç çıkma: dil zaten tamamen istemci tarafında
+  // değişiyor, istek yalnızca "haber verme" amaçlıydı.
+  if (!isLanguageApiEnabled) {
+    setLang(nextLang);
+    setStatus("success");
+    toast.success(
+      nextLang === "tr" ? "Dil Türkçe olarak güncellendi" : "Language updated to English"
+    );
+    return;
+  }
+
   setStatus("loading");
   try {
     await api.post(env.apiLanguageEndpoint, { language: nextLang });
