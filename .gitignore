@@ -17,8 +17,9 @@ dist/
 *.swp
 
 # --- AI ajan dosyaları (uygulamanın çalışması için gerekli değil) ---
-# Claude Code'a verilen prompt/brief dosyaları
+# Claude Code'a verilen prompt/brief dosyaları ve üretilen çalışma notları
 claude-code-prompt.md
+shores.md
 # Kullanıcıya özel yerel ajan ayarları. Not: `.claude/settings.json` ve
 # `CLAUDE.md` takım genelinde paylaşılabilir olduğu için BİLEREK dışlanmadı —
 # paylaşmak istemiyorsan aşağıya `.claude/` ve `CLAUDE.md` ekle.
