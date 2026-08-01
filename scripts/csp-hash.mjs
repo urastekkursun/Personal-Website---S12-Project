@@ -32,6 +32,39 @@ const CONFIG_FILES = ["vercel.json", "netlify.toml"];
 const SCRIPT_SRC_RE = /script-src 'self'((?: '(?:sha256|sha384|sha512)-[A-Za-z0-9+/=]+')*)/;
 // src'si OLMAYAN (yani inline) script blokları
 const INLINE_SCRIPT_RE = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g;
+// Sağlamlık kontrolü için: tüm açılış etiketleri, src'li olanlar, kapanışlar
+const OPEN_TAG_RE = /<script\b[^>]*>/g;
+const OPEN_TAG_WITH_SRC_RE = /<script\b[^>]*\bsrc=[^>]*>/g;
+const CLOSE_TAG_RE = /<\/script\s*>/g;
+
+const count = (html, re) => (html.match(re) || []).length;
+
+/**
+ * HTML'i ayrıştırırken sessizce yanlış sonuç üretmemek için tutarlılık kontrolü.
+ *
+ * Somut risk: `</script>` kapanışı bozulursa (ör. `</scrpt>`) regex bir sonraki
+ * kapanışa kadar YANLIŞ bir aralığı eşleştirir, geçerli görünen ama tamamen
+ * hatalı bir hash üretir. `csp:sync` bunu config'e yazar, `csp:check` yeşil
+ * kalır ve tarayıcı gerçek script'i bloklar — yani hata tam da engellemeye
+ * çalıştığımız şekilde sessizce geçer.
+ */
+function assertParseSane(html, inlineCount) {
+  const open = count(html, OPEN_TAG_RE);
+  const withSrc = count(html, OPEN_TAG_WITH_SRC_RE);
+  const close = count(html, CLOSE_TAG_RE);
+  const expectedInline = open - withSrc;
+  const problems = [];
+
+  if (open !== close) {
+    problems.push(`${open} adet <script> açılışına karşılık ${close} adet </script> kapanışı var`);
+  }
+  if (inlineCount !== expectedInline) {
+    problems.push(
+      `${expectedInline} adet inline script bekleniyordu, ${inlineCount} tanesi ayrıştırılabildi`
+    );
+  }
+  return problems;
+}
 
 function readHtml() {
   // Servis edilen dosya dist/index.html olduğu için önce onu tercih et.
@@ -65,6 +98,16 @@ const directive = buildDirective(hashes);
 console.log(`Kaynak: ${label}`);
 console.log(`Inline script sayısı: ${hashes.length}`);
 hashes.forEach((h) => console.log(`  ${h}`));
+
+// Ayrıştırma güvenilir değilse HİÇBİR ŞEY yazma — yanlış hash yazmak,
+// hash'i hiç güncellememekten daha tehlikeli çünkü sonraki check'ler yeşil kalır.
+const parseProblems = assertParseSane(html, hashes.length);
+if (parseProblems.length) {
+  console.error("\n✖ HTML güvenilir şekilde ayrıştırılamadı:");
+  parseProblems.forEach((p) => console.error(`  - ${p}`));
+  console.error("  Config dosyalarına DOKUNULMADI. index.html'deki <script> etiketlerini kontrol et.");
+  process.exit(1);
+}
 
 let changed = [];
 let missing = [];

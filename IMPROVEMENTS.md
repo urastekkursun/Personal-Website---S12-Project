@@ -343,6 +343,25 @@ Script:
 
 `.github/workflows/ci.yml` içine **CSP hash senkron mu?** adımı eklendi:
 `index.html` düzenlenip `csp:sync` çalıştırılmadıysa PR kırmızıya döner.
+Adım **Build'den sonra** çalışır — böylece script kaynak `index.html`'i değil,
+gerçekten servis edilen `dist/index.html`'i okur.
+
+### Hata davranışı (test edildi)
+
+| Senaryo | Davranış |
+|---|---|
+| Config'te `script-src 'self'` kalıbı bulunamıyor (format değişti) | **Gürültülü hata**, `exit 1`, hangi dosya olduğunu söyler |
+| Config dosyası hiç yok | **Gürültülü hata**, `exit 1` |
+| Hash güncel değil | **Gürültülü hata**, `exit 1` + `csp:sync` önerisi |
+| `<script>` / `</script>` sayısı tutmuyor veya inline script ayrıştırılamıyor | **Gürültülü hata**, `exit 1`, **config'e hiçbir şey yazılmaz** |
+
+Son satır sonradan eklendi çünkü gerçek bir açık vardı: `</script>` kapanışı
+bozulduğunda (ör. `</scrpt>`) regex bir sonraki kapanışa kadar **yanlış bir
+aralığı** eşleştirip geçerli görünen ama tamamen hatalı bir hash üretiyordu.
+`csp:sync` bunu config'e yazıyor, sonraki `csp:check` **yeşil** kalıyor ve
+tarayıcı gerçek script'i blokluyordu — yani hata tam da engellemeye çalıştığımız
+şekilde sessizce geçiyordu. Artık script açılış/kapanış etiketi sayılarını
+karşılaştırıp tutarsızlıkta config'e **dokunmadan** çıkıyor.
 
 **Doğrulandı:** `index.html`'deki JSON-LD kasten değiştirildi →
 `csp:check` exit **1** verip iki dosyayı da bildirdi → `csp:sync` düzeltti →
