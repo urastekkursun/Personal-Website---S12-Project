@@ -84,6 +84,9 @@ hatası yok.
 - **Axios:** 8 sn timeout eklendi, timeout ile diğer hatalar için ayrı toast
   mesajları yazıldı, `console.error` yerine yalnızca development'ta yazan
   `logError` kullanılıyor — production'da stack trace konsola basılmıyor.
+  > **Güncel durum:** `axios` sonradan **tamamen kaldırıldı** (§5.2). Bu madde
+  > o adımın tarihsel kaydıdır; aynı davranış artık `fetch` +
+  > `AbortSignal.timeout()` ile sağlanıyor.
 
 - **Güvenlik header'ları:** `vercel.json` ve `netlify.toml` oluşturuldu.
   `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`,
@@ -249,8 +252,10 @@ tamamlanmış demektir.
   - **Durum:** İstek bir bootcamp gereksinimiydi, gerçek işlevi yok ve anahtar
     iptal edildiği için varsayılan olarak hiç atılmıyor (bkz. §3b).
   - **Ne yap:** ödev artık teslim edilmeyecekse `apiClient.js`,
-    `changeLanguage` içindeki try/catch ve ilgili env değişkenleri silinebilir;
-    `axios` bağımlılığı da kalkar.
+    `changeLanguage` içindeki try/catch ve ilgili env değişkenleri silinebilir.
+  - **Not:** `axios` bağımlılığı §5.2'de zaten kaldırıldı; bu madde artık
+    yalnızca kalan ~40 satırlık `fetch` kod yolunu ve `connect-src`'teki
+    `https://reqres.in` iznini kapsıyor, bir bağımlılık kazancı yok.
 
 - [ ] **S4. Testleri yaz.** Bkz. §4 madde 1 — şu an hiç test yok.
   - **Doğrula:** `npm test` komutu var olmalı ve geçmeli.
@@ -364,6 +369,13 @@ tarayıcı gerçek script'i blokluyordu — yani hata tam da engellemeye çalı�
 şekilde sessizce geçiyordu. Artık script açılış/kapanış etiketi sayılarını
 karşılaştırıp tutarsızlıkta config'e **dokunmadan** çıkıyor.
 
+**Bilinen sınırlama:** Kontrol etiket *sayılarını* karşılaştırıyor, içeriği
+doğrulamıyor — açılış/kapanış sayıları eşit kaldığı hâlde regex'in yanlış bir
+aralığı eşleştirdiği (ör. bir script içeriğinde `</script>` benzeri bir dizge
+geçmesi) teorik bir durumda hâlâ hatalı hash üretebilir. Gerçek HTML
+ayrıştırıcısı kullanmak bunu tamamen kapatır; mevcut tek inline script (JSON-LD)
+için bu risk pratikte yok.
+
 **Doğrulandı:** `index.html`'deki JSON-LD kasten değiştirildi →
 `csp:check` exit **1** verip iki dosyayı da bildirdi → `csp:sync` düzeltti →
 `csp:check` exit **0**. Ardından değişiklik geri alındı.
@@ -427,9 +439,9 @@ artığı, `.gitignore`'da zaten dışlanmışlardı ama diskte duruyorlardı.
 
 | Kategori | Sonuç |
 |---|---|
-| `src/assets/*.jpg` (4 görsel) | Hepsi birer `import` ile kullanılıyor |
+| `src/assets/*` (4 görsel) | Hepsi birer `import` ile kullanılıyor (§5.3'te `.webp`'ye çevrildiler) |
 | `public/favicon.svg`, `public/og-image.jpg` | İkisi de `index.html`'de referanslı |
-| `dependencies` (5 paket) | Hepsi import ediliyor (`axios`, `react`, `react-dom`, `react-icons`, `react-toastify`) |
+| `dependencies` | Hepsi import ediliyor. Tarama sırasında 5 paketti; §5.2'de `axios` kaldırıldı, şu an 4: `react`, `react-dom`, `react-icons`, `react-toastify` |
 | Kaynak dosyalar (24 adet) | Yetim dosya yok |
 | `.github/`, `scripts/`, `public/` | Hepsi kullanımda |
 
@@ -500,7 +512,7 @@ sürüm aynı anda, baytlar CDP `Network` olaylarıyla sayılarak:
 | CLS | 0.0301 | 0.0288 | ~aynı |
 | axe-core ihlali | 0 | 0 | regresyon yok |
 
-### 6.1 Fontlar self-host edildi
+### 5.1 Fontlar self-host edildi
 
 Inter + Playfair Display woff2 dosyaları `src/assets/fonts/`'a alındı,
 `@font-face` tanımları `index.css`'e yazıldı, `index.html`'deki Google Fonts
@@ -536,7 +548,7 @@ Inter + Playfair Display woff2 dosyaları `src/assets/fonts/`'a alındı,
 **Kazanç:** performans + CSP'den iki dış origin istisnasının kalkması +
 ziyaretçi IP'sinin Google'a gitmemesi (bkz. shores.md §1.3, GDPR).
 
-### 6.2 axios kaldırıldı → `fetch`
+### 5.2 axios kaldırıldı → `fetch`
 
 `axios` bağımlılığı silindi, `apiClient.js` `fetch` + `AbortSignal.timeout()`
 ile yeniden yazıldı. Ölçülen kazanç: **−15.2 kB gzip**.
@@ -555,7 +567,7 @@ yakalanıyor, dil yine değişiyor. Anahtar boşken ağa hiç çıkılmıyor.
 `e.name === "TimeoutError"` kullanılıyor; `fetch` 4xx/5xx'te reddetmediği için
 `HttpError` sınıfı eklendi.
 
-### 6.3 Görseller WebP'ye çevrildi
+### 5.3 Görseller WebP'ye çevrildi
 
 4 görsel `cwebp -q 80` ile dönüştürüldü, `.jpg` dosyaları silindi, import'lar
 güncellendi. Disk üzerinde 324.5 kB → 127.0 kB.
@@ -565,7 +577,7 @@ sosyal medya crawler'ları WebP'yi güvenilir işlemiyor.
 
 İlk yüklemedeki etkisi: hero görseli 128.6 kB → 66.1 kB.
 
-### 6.4 Sistem teması dinleniyor
+### 5.4 Sistem teması dinleniyor
 
 İlk ziyarette `prefers-color-scheme` okunuyor. Kullanıcı toggle'a bastığı an
 tercihi kaydediliyor ve bundan sonra sistem tercihini eziyor.
@@ -576,7 +588,7 @@ tercihi kaydediliyor ve bundan sonra sistem tercihini eziyor.
 Doğrulandı: sistem dark → site dark ✅ · sistem light → site light ✅ ·
 sistem dark + kayıtlı tercih light → site light ✅ (kullanıcı kazanıyor).
 
-### 6.5 CSP sıkılaştırıldı
+### 5.5 CSP sıkılaştırıldı
 
 Fontlar self-host edildiği için dış origin istisnaları silindi:
 
@@ -588,7 +600,7 @@ Fontlar self-host edildiği için dış origin istisnaları silindi:
 + frame-src 'none'; worker-src 'none'; media-src 'none';
 ```
 
-`connect-src`'te `https://reqres.in` **kaldı**, çünkü §6.2'de özellik korundu —
+`connect-src`'te `https://reqres.in` **kaldı**, çünkü §5.2'de özellik korundu —
 anahtar tanımlanırsa istek çalışmalı.
 
 `style-src 'unsafe-inline'` hâlâ duruyor (react-toastify runtime'da inline
