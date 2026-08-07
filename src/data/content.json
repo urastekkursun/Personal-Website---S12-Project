@@ -81,6 +81,8 @@
     "prevLabel": { "tr": "Önceki projeler", "en": "Previous projects" },
     "nextLabel": { "tr": "Sonraki projeler", "en": "Next projects" },
     "counterBefore": { "tr": "Proje", "en": "Project" },
+    "carouselRole": { "tr": "karusel", "en": "carousel" },
+    "slideRole": { "tr": "slayt", "en": "slide" },
     "items": [
       {
         "id": "1",

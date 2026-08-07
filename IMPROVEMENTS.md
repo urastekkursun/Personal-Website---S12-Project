@@ -607,3 +607,106 @@ anahtar tanımlanırsa istek çalışmalı.
 stil yazıyor). shores.md §2.1'de ele alınıyor, bu sprint'in kapsamında değildi.
 
 ---
+
+## 6. Grup 2 — Bilinen bug'lar (7 Ağustos 2026)
+
+### 6.1 "3 projeden sadece 2'si render oluyor" — render bug'ı yok
+
+Tarayıcıda ölçüldü: **üç proje de erişilebilir.** Carousel aynı anda 2 kart
+gösteren kayan pencere kullanıyor, ileri/geri tuşlarıyla üçü de dolaşılıyor:
+
+| Adım | Sayaç | Görünen |
+|---|---|---|
+| 0 | Proje 1, 2 / 3 | OtoCore, HKM Medikal |
+| 1 | Proje 2, 3 / 3 | HKM Medikal, Difod |
+| 2 | Proje 3, 1 / 3 | Difod, OtoCore |
+
+`content.json`'da 3 proje var, üçü de render ediliyor, konsol uyarısı yok.
+Eksik veri, filtre hatası veya key çakışması **yok**.
+
+**Asıl kusur sayaçtı:** ekranda 2 kart varken "Proje 1 / 3" yazıyordu — bu
+"1 tane gösteriliyor, 3 tane var" gibi okunuyor ve muhtemelen "biri
+render olmuyor" izlenimini yaratan şey buydu. Sayaç artık görünen projelerin
+tamamını ve adlarını yazıyor: **"Proje 1, 2 / 3: OtoCore, HKM Medikal"**.
+(Sarma durumunda "3, 1 / 3" olduğu için aralık `1-2` yerine tek tek liste
+kullanıldı.)
+
+**Gerçek ama gizli bir bug bulundu ve düzeltildi:** pencere sabit 2 kart
+alıyordu. Proje sayısı 1'e düşseydi `items[0 % 1]` ve `items[1 % 1]` aynı
+projeyi verecek, aynı `key` iki kez render edilip React'ta duplicate key
+hatasına yol açacaktı. Pencere artık `Math.min(2, total)` ile sınırlı.
+
+> **Açık tasarım kararı:** Üç kartın **aynı anda** görünmesi isteniyorsa
+> carousel'in tamamen kaldırılması gerekir — bu bir bug düzeltmesi değil,
+> tasarım değişikliğidir ve ayrıca karar verilmeli.
+
+### 6.2 Carousel klavye erişilebilirliği
+
+| Ekleme | Ayrıntı |
+|---|---|
+| `aria-roledescription="karusel"` | Kapsayıcıda `role="group"` + bölüm adıyla etiket |
+| `aria-roledescription="slayt"` | Her kartta, `"OtoCore — 1 / 3"` biçiminde konum etiketiyle |
+| Ok tuşları | `ArrowLeft` / `ArrowRight` ile gezinme |
+| Odak yönetimi | Slayt değişince odak kaybolmuyor (doğrulandı) |
+| Çift duyuru düzeltmesi | Grid'deki `aria-live` **kaldırıldı** |
+
+**Çift duyuru neden sorundu:** hem `.projects__grid` hem sayaç `aria-live`
+taşıyordu. Her ok basışında ekran okuyucu **iki proje kartının tüm içeriğini**
+(başlık, açıklama, etiketler, linkler) baştan okuyor, ardından sayacı da
+okuyordu. Artık tek canlı bölge var ve o da kısa: konumlar + proje adları.
+
+**Ok tuşu kapsamı:** odak bir bağlantı veya form öğesindeyken ok tuşları
+karuseli oynatmıyor — kart içindeki linkler arasında gezinirken beklenmedik
+kaymayı önlemek için (doğrulandı).
+
+**ARIA-in-HTML tuzağı:** slaytlara önce APG'nin önerdiği `role="group"`
+eklendi, ama axe `aria-allowed-role` ihlali verdi — `<article>` üzerinde
+`group` izinli bir rol değil. `role` ezmesi kaldırıldı; `<article>` zaten
+kendi kendine yeten içerik için doğru semantik ve `aria-roledescription`
+global bir öznitelik olduğu için slayt duyurusu korunuyor.
+
+**Doğrulama:** axe-core 3 konfigürasyonda (light/dark × 1440/375) **0 ihlal**.
+Klavye gezintisi baştan sona test edildi.
+
+**scroll-snap değerlendirmesi (uygulanmadı):** CSS `scroll-snap` JS'siz ve
+native klavye/dokunmatik desteği getirir, ama mevcut "2 kart göster, ok
+tuşlarıyla kaydır" tasarımını "hepsi yan yana, yatay kaydır" tasarımına
+çevirir. Bu bir tasarım değişikliği olduğu için Grup 3'e bırakıldı; asıl
+kazancı (mobil swipe) hâlâ eksik ve orada ele alınabilir.
+
+### 6.3 hreflang — mevcut mimaride uygulanamaz
+
+**Eklenmedi.** Ölçümle çıkan kısıt:
+
+| Ölçüm | Sonuç |
+|---|---|
+| Dil değişince URL | **Değişmiyor** — TR ve EN aynı `/` adresinde |
+| JS kapalıyken sayfa içeriği | **0 karakter** — tamamen istemci tarafında render |
+| `<html lang>` | Dinamik güncelleniyor ✅ |
+| `og:locale:alternate` | Zaten var ✅ |
+
+`hreflang`'ın çalışması için **her dilin ayrı bir URL'de** olması şart
+(Google: "each language version must be discoverable at a distinct URL").
+Tek URL'ye `hreflang="en"` ve `hreflang="tr"` birlikte verilirse etiketler
+kendi kendini gösterir; bu SEO faydası sağlamaz ve Search Console'da hatalı
+yapılandırma olarak raporlanır. **Bu yüzden bilerek eklenmedi** — yanlış
+etiket, etiketsizlikten kötüdür.
+
+Ayrıca ölçüm sırasında **daha büyük bir SEO sorunu** ortaya çıktı: JS
+çalıştırmayan crawler'lar sayfayı **tamamen boş** görüyor. Google JS'i
+render ediyor ama LinkedIn, Slack ve benzeri önizleme botları etmiyor (onlar
+için OG etiketleri yeterli, ama arama indeksleme için değil).
+
+**Çözüm seçenekleri (mimari karar gerekiyor):**
+
+1. **Statik ön render (önerilen).** `vite-react-ssg` / `react-snap` gibi bir
+   araçla build sırasında `/index.html` (TR) ve `/en/index.html` (EN)
+   üretilir. Tek hamlede **hem** hreflang'i mümkün kılar **hem** boş-HTML
+   sorununu çözer. Efor: orta.
+2. **`react-router` + dil önekli rotalar** (`/` ve `/en`). hreflang'i mümkün
+   kılar ama sayfa hâlâ istemci tarafında render edildiği için boş-HTML
+   sorunu sürer. Tek başına yarım çözüm.
+3. **Olduğu gibi bırak.** Yalnızca TR içerik indekslenir. Kişisel portfolyo
+   için kabul edilebilir bir kayıp olabilir.
+
+1 numara seçilirse `hreflang` + `x-default` etiketleri doğal olarak eklenir.

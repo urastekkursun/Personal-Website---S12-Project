@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 
-export default function ProjectCard({ project, tone, image }) {
+export default function ProjectCard({ project, tone, image, slideLabel, slideRole }) {
   const { t } = useLanguage();
   const [imageLoaded, setImageLoaded] = useState(false);
   const headingId = `project-${project.id}-title`;
@@ -12,11 +12,17 @@ export default function ProjectCard({ project, tone, image }) {
     if (node?.complete) setImageLoaded(true);
   }, []);
 
+  // Karusel içinde kullanılınca slayt olarak duyurulur: aria-roledescription
+  // + konum bilgisi içeren etiket. `role="group"` BİLEREK eklenmiyor —
+  // ARIA-in-HTML'e göre <article> üzerinde group izinli bir rol değil ve
+  // axe bunu `aria-allowed-role` ihlali olarak işaretliyor. <article> zaten
+  // kendi kendine yeten içerik için doğru semantik.
+  const slideProps = slideLabel
+    ? { "aria-roledescription": slideRole, "aria-label": slideLabel }
+    : { "aria-labelledby": headingId };
+
   return (
-    <article
-      className={`project-card project-card--${tone}`}
-      aria-labelledby={headingId}
-    >
+    <article className={`project-card project-card--${tone}`} {...slideProps}>
       <h3 id={headingId}>{project.name}</h3>
       <p>{project.description}</p>
 
