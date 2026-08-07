@@ -88,10 +88,56 @@
   --color-focus: #0a58ca;
   --color-skeleton: #e6e6e6;
   --color-skeleton-shine: #f6f6f6;
+  /* Zeminle aynı tona düşen yüzeyleri (koyu ikon kutuları, açık ekran
+     görüntüleri) ayırmak için. WCAG 1.4.11'in grafik nesneler için istediği
+     3:1'i geçiyor — `--color-border` (1.25:1) bu iş için çok soluktu. */
+  --color-outline: #949494;
   --font-heading: "Playfair Display", "Georgia", serif;
   --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
+
+  /* ---------- Spacing ölçeği (4px grid) ----------
+     Önceden ölçek yoktu: 9px, 14px, 35px, 70px, 90px gibi grid dışı değerler
+     serpiştirilmişti. Hepsi en yakın adıma oturtuldu. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-11: 44px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-18: 72px;
+  --space-22: 88px;
+  --space-25: 100px;
+  --space-30: 120px;
+
+  /* ---------- Tipografi ölçeği ----------
+     Önceden 13 ayrı boyut vardı (13/14/15/16/18/20/22/24/28/29/30/36/48).
+     8 adıma indirildi; 15→16, 22→20, 29→28, 30→28 olarak yuvarlandı. */
+  --text-xs: 13px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-md: 18px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 28px;
+  --text-3xl: 36px;
+  --text-4xl: 48px;
+
+  /* ---------- Yarıçap ölçeği ---------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
 }
 
 [data-theme="dark"] {
@@ -112,6 +158,7 @@
   --color-focus: #8fbcff;
   --color-skeleton: #2f3038;
   --color-skeleton-shine: #3a3b44;
+  --color-outline: #6b6c78;
 }
 
 * {
@@ -142,7 +189,7 @@ mark {
 :focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 /* Tarayıcı :focus-visible'ı desteklemiyorsa varsayılan halka kalsın */
@@ -176,8 +223,8 @@ mark {
   background: var(--color-bg);
   color: var(--color-text);
   border: 2px solid var(--color-focus);
-  border-radius: 0 0 8px 0;
-  padding: 12px 20px;
+  border-radius: 0 0 var(--radius-md) 0;
+  padding: var(--space-3) var(--space-5);
   font-weight: 600;
   transition: transform var(--transition-fast);
 }

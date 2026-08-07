@@ -710,3 +710,75 @@ için OG etiketleri yeterli, ama arama indeksleme için değil).
    için kabul edilebilir bir kayıp olabilir.
 
 1 numara seçilirse `hreflang` + `x-default` etiketleri doğal olarak eklenir.
+
+## 7. Grup 3 — Tasarım / UX (7 Ağustos 2026)
+
+### 7.1 Tasarım sistemi: spacing ve tipografi ölçeği eklendi
+
+**Önceki durum ölçüldü:** hiçbir ölçek yoktu.
+
+- **13 farklı font boyutu**: 13, 14, 15, 16, 18, 20, 22, 24, 28, 29, 30, 36, 48 px
+- **Spacing 4px grid'e oturmuyordu**: 9, 14, 35, 70, 90 px gibi değerler serpiştirilmişti
+
+**Eklenen token'lar** (`src/index.css`):
+
+| Ölçek | Adım sayısı | Not |
+|---|---|---|
+| `--space-1..30` | 18 | 4px grid |
+| `--text-xs..4xl` | 9 | 13 boyuttan indirildi |
+| `--radius-sm..pill` | 5 | |
+
+**Uygulama:** 63 spacing, 35 `font-size`, 17 `border-radius` bildirimi token'a
+çevrildi. Grid dışı değerler en yakın adıma yuvarlandı:
+`15→16`, `22→20`, `29→28`, `30→28` (tipografi) ·
+`9→8`, `14→16`, `10→12`, `35→36`, `70→72`, `90→88` (spacing).
+
+`.visually-hidden` içindeki `margin: -1px` **bilerek dokunulmadı** — bu bir
+spacing değeri değil, ekran okuyucu kırpma tekniğinin parçası.
+
+**Görsel etki ölçüldü** (önce/sonra piksel karşılaştırması):
+
+| Görünüm | Fark |
+|---|---|
+| 1440 light | %6.37 piksel |
+| 1440 dark | %6.32 piksel |
+| 768 | sayfa yüksekliği 4561 → 4583 px |
+| 375 | sayfa yüksekliği 4980 → 5013 px |
+
+Fark tamamen yuvarlamalardan gelen metin akışı kayması; düzen, hizalama ve
+bileşen yapısı korundu (ekran görüntüleriyle doğrulandı).
+
+### 7.2 Dark/light görsel tutarlılık — ölçülen gerçek kusur
+
+Grup 3'ün en somut bulgusu. İkon kutularının zeminle kontrastı hesaplandı:
+
+| Kutu | Dark zemin (#14151a) | Light zemin (#ffffff) |
+|---|---|---|
+| React `#0d1117` | **1.04:1** ✖ görünmez | 18.92:1 ✅ |
+| Node `#111111` | **1.04:1** ✖ görünmez | 18.88:1 ✅ |
+| Figma `#1e1e1e` | **1.09:1** ✖ görünmez | 16.67:1 ✅ |
+| JS `#f0db4f` | 12.98:1 ✅ | **1.40:1** ✖ görünmez |
+| Redux / VS Code / TS | ✅ | ✅ |
+
+Yani **her iki temada da** bazı kutular zemine karışıyordu — dark'ta üç koyu
+kutu, light'ta sarı JS kutusu. Marka renklerini değiştirmeden çözmek için yeni
+bir `--color-outline` token'ı eklendi (light `#949494` → 3.03:1, dark `#6b6c78`
+→ 3.51:1; ikisi de WCAG 1.4.11'in grafik nesneler için istediği 3:1'i geçiyor).
+`--color-border` bu iş için çok soluktu (1.25:1).
+
+Aynı çerçeve proje ekran görüntülerine de uygulandı: açık renkli görüntüler
+dark temada sınırsız parlak dikdörtgen gibi duruyordu. **Görüntüler
+karartılmadı** — portfolyoda ekran görüntüsünün sadakati önemli; yalnızca sınır
+belirginleştirildi.
+
+### 7.3 Zaten sağlam olanlar (doğrulandı, değiştirilmedi)
+
+| Madde | Ölçüm |
+|---|---|
+| **Skeleton/loading** | Yavaş ağ simülasyonunda (30 kB/s) kart görselleri `skeleton-shine` animasyonuyla bekliyor ✅ |
+| **Mikro-etkileşimler** | 8 öğede transition tanımlı, hepsi ortak 150/250 ms token'ları kullanıyor ✅ |
+| **`prefers-reduced-motion`** | Etkinken `transition-duration` 1e-05s'ye düşüyor ✅ |
+| **404 tasarımı** | Playfair Display (marka başlık fontu), tema duyarlı accent (light `#c81862` / dark `#ff5c9d`), header dahil — jenerik değil ✅ |
+
+**Doğrulama:** `build` ✅ · `lint` 0 hata/uyarı ✅ · `csp:check` ✅ ·
+axe-core 3 konfigürasyonda **0 ihlal** ✅
