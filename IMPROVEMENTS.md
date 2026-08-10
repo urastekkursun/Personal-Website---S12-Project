@@ -84,6 +84,9 @@ hatası yok.
 - **Axios:** 8 sn timeout eklendi, timeout ile diğer hatalar için ayrı toast
   mesajları yazıldı, `console.error` yerine yalnızca development'ta yazan
   `logError` kullanılıyor — production'da stack trace konsola basılmıyor.
+  > **Güncel durum:** `axios` sonradan **tamamen kaldırıldı** (§5.2). Bu madde
+  > o adımın tarihsel kaydıdır; aynı davranış artık `fetch` +
+  > `AbortSignal.timeout()` ile sağlanıyor.
 
 - **Güvenlik header'ları:** `vercel.json` ve `netlify.toml` oluşturuldu.
   `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`,
@@ -249,8 +252,10 @@ tamamlanmış demektir.
   - **Durum:** İstek bir bootcamp gereksinimiydi, gerçek işlevi yok ve anahtar
     iptal edildiği için varsayılan olarak hiç atılmıyor (bkz. §3b).
   - **Ne yap:** ödev artık teslim edilmeyecekse `apiClient.js`,
-    `changeLanguage` içindeki try/catch ve ilgili env değişkenleri silinebilir;
-    `axios` bağımlılığı da kalkar.
+    `changeLanguage` içindeki try/catch ve ilgili env değişkenleri silinebilir.
+  - **Not:** `axios` bağımlılığı §5.2'de zaten kaldırıldı; bu madde artık
+    yalnızca kalan ~40 satırlık `fetch` kod yolunu ve `connect-src`'teki
+    `https://reqres.in` iznini kapsıyor, bir bağımlılık kazancı yok.
 
 - [ ] **S4. Testleri yaz.** Bkz. §4 madde 1 — şu an hiç test yok.
   - **Doğrula:** `npm test` komutu var olmalı ve geçmeli.
@@ -364,6 +369,13 @@ tarayıcı gerçek script'i blokluyordu — yani hata tam da engellemeye çalı�
 şekilde sessizce geçiyordu. Artık script açılış/kapanış etiketi sayılarını
 karşılaştırıp tutarsızlıkta config'e **dokunmadan** çıkıyor.
 
+**Bilinen sınırlama:** Kontrol etiket *sayılarını* karşılaştırıyor, içeriği
+doğrulamıyor — açılış/kapanış sayıları eşit kaldığı hâlde regex'in yanlış bir
+aralığı eşleştirdiği (ör. bir script içeriğinde `</script>` benzeri bir dizge
+geçmesi) teorik bir durumda hâlâ hatalı hash üretebilir. Gerçek HTML
+ayrıştırıcısı kullanmak bunu tamamen kapatır; mevcut tek inline script (JSON-LD)
+için bu risk pratikte yok.
+
 **Doğrulandı:** `index.html`'deki JSON-LD kasten değiştirildi →
 `csp:check` exit **1** verip iki dosyayı da bildirdi → `csp:sync` düzeltti →
 `csp:check` exit **0**. Ardından değişiklik geri alındı.
@@ -427,9 +439,9 @@ artığı, `.gitignore`'da zaten dışlanmışlardı ama diskte duruyorlardı.
 
 | Kategori | Sonuç |
 |---|---|
-| `src/assets/*.jpg` (4 görsel) | Hepsi birer `import` ile kullanılıyor |
+| `src/assets/*` (4 görsel) | Hepsi birer `import` ile kullanılıyor (§5.3'te `.webp`'ye çevrildiler) |
 | `public/favicon.svg`, `public/og-image.jpg` | İkisi de `index.html`'de referanslı |
-| `dependencies` (5 paket) | Hepsi import ediliyor (`axios`, `react`, `react-dom`, `react-icons`, `react-toastify`) |
+| `dependencies` | Hepsi import ediliyor. Tarama sırasında 5 paketti; §5.2'de `axios` kaldırıldı, şu an 4: `react`, `react-dom`, `react-icons`, `react-toastify` |
 | Kaynak dosyalar (24 adet) | Yetim dosya yok |
 | `.github/`, `scripts/`, `public/` | Hepsi kullanımda |
 
@@ -500,7 +512,7 @@ sürüm aynı anda, baytlar CDP `Network` olaylarıyla sayılarak:
 | CLS | 0.0301 | 0.0288 | ~aynı |
 | axe-core ihlali | 0 | 0 | regresyon yok |
 
-### 6.1 Fontlar self-host edildi
+### 5.1 Fontlar self-host edildi
 
 Inter + Playfair Display woff2 dosyaları `src/assets/fonts/`'a alındı,
 `@font-face` tanımları `index.css`'e yazıldı, `index.html`'deki Google Fonts
@@ -536,7 +548,7 @@ Inter + Playfair Display woff2 dosyaları `src/assets/fonts/`'a alındı,
 **Kazanç:** performans + CSP'den iki dış origin istisnasının kalkması +
 ziyaretçi IP'sinin Google'a gitmemesi (bkz. shores.md §1.3, GDPR).
 
-### 6.2 axios kaldırıldı → `fetch`
+### 5.2 axios kaldırıldı → `fetch`
 
 `axios` bağımlılığı silindi, `apiClient.js` `fetch` + `AbortSignal.timeout()`
 ile yeniden yazıldı. Ölçülen kazanç: **−15.2 kB gzip**.
@@ -555,7 +567,7 @@ yakalanıyor, dil yine değişiyor. Anahtar boşken ağa hiç çıkılmıyor.
 `e.name === "TimeoutError"` kullanılıyor; `fetch` 4xx/5xx'te reddetmediği için
 `HttpError` sınıfı eklendi.
 
-### 6.3 Görseller WebP'ye çevrildi
+### 5.3 Görseller WebP'ye çevrildi
 
 4 görsel `cwebp -q 80` ile dönüştürüldü, `.jpg` dosyaları silindi, import'lar
 güncellendi. Disk üzerinde 324.5 kB → 127.0 kB.
@@ -565,7 +577,7 @@ sosyal medya crawler'ları WebP'yi güvenilir işlemiyor.
 
 İlk yüklemedeki etkisi: hero görseli 128.6 kB → 66.1 kB.
 
-### 6.4 Sistem teması dinleniyor
+### 5.4 Sistem teması dinleniyor
 
 İlk ziyarette `prefers-color-scheme` okunuyor. Kullanıcı toggle'a bastığı an
 tercihi kaydediliyor ve bundan sonra sistem tercihini eziyor.
@@ -576,7 +588,7 @@ tercihi kaydediliyor ve bundan sonra sistem tercihini eziyor.
 Doğrulandı: sistem dark → site dark ✅ · sistem light → site light ✅ ·
 sistem dark + kayıtlı tercih light → site light ✅ (kullanıcı kazanıyor).
 
-### 6.5 CSP sıkılaştırıldı
+### 5.5 CSP sıkılaştırıldı
 
 Fontlar self-host edildiği için dış origin istisnaları silindi:
 
@@ -588,10 +600,185 @@ Fontlar self-host edildiği için dış origin istisnaları silindi:
 + frame-src 'none'; worker-src 'none'; media-src 'none';
 ```
 
-`connect-src`'te `https://reqres.in` **kaldı**, çünkü §6.2'de özellik korundu —
+`connect-src`'te `https://reqres.in` **kaldı**, çünkü §5.2'de özellik korundu —
 anahtar tanımlanırsa istek çalışmalı.
 
 `style-src 'unsafe-inline'` hâlâ duruyor (react-toastify runtime'da inline
 stil yazıyor). shores.md §2.1'de ele alınıyor, bu sprint'in kapsamında değildi.
 
 ---
+
+## 6. Grup 2 — Bilinen bug'lar (7 Ağustos 2026)
+
+### 6.1 "3 projeden sadece 2'si render oluyor" — render bug'ı yok
+
+Tarayıcıda ölçüldü: **üç proje de erişilebilir.** Carousel aynı anda 2 kart
+gösteren kayan pencere kullanıyor, ileri/geri tuşlarıyla üçü de dolaşılıyor:
+
+| Adım | Sayaç | Görünen |
+|---|---|---|
+| 0 | Proje 1, 2 / 3 | OtoCore, HKM Medikal |
+| 1 | Proje 2, 3 / 3 | HKM Medikal, Difod |
+| 2 | Proje 3, 1 / 3 | Difod, OtoCore |
+
+`content.json`'da 3 proje var, üçü de render ediliyor, konsol uyarısı yok.
+Eksik veri, filtre hatası veya key çakışması **yok**.
+
+**Asıl kusur sayaçtı:** ekranda 2 kart varken "Proje 1 / 3" yazıyordu — bu
+"1 tane gösteriliyor, 3 tane var" gibi okunuyor ve muhtemelen "biri
+render olmuyor" izlenimini yaratan şey buydu. Sayaç artık görünen projelerin
+tamamını ve adlarını yazıyor: **"Proje 1, 2 / 3: OtoCore, HKM Medikal"**.
+(Sarma durumunda "3, 1 / 3" olduğu için aralık `1-2` yerine tek tek liste
+kullanıldı.)
+
+**Gerçek ama gizli bir bug bulundu ve düzeltildi:** pencere sabit 2 kart
+alıyordu. Proje sayısı 1'e düşseydi `items[0 % 1]` ve `items[1 % 1]` aynı
+projeyi verecek, aynı `key` iki kez render edilip React'ta duplicate key
+hatasına yol açacaktı. Pencere artık `Math.min(2, total)` ile sınırlı.
+
+> **Açık tasarım kararı:** Üç kartın **aynı anda** görünmesi isteniyorsa
+> carousel'in tamamen kaldırılması gerekir — bu bir bug düzeltmesi değil,
+> tasarım değişikliğidir ve ayrıca karar verilmeli.
+
+### 6.2 Carousel klavye erişilebilirliği
+
+| Ekleme | Ayrıntı |
+|---|---|
+| `aria-roledescription="karusel"` | Kapsayıcıda `role="group"` + bölüm adıyla etiket |
+| `aria-roledescription="slayt"` | Her kartta, `"OtoCore — 1 / 3"` biçiminde konum etiketiyle |
+| Ok tuşları | `ArrowLeft` / `ArrowRight` ile gezinme |
+| Odak yönetimi | Slayt değişince odak kaybolmuyor (doğrulandı) |
+| Çift duyuru düzeltmesi | Grid'deki `aria-live` **kaldırıldı** |
+
+**Çift duyuru neden sorundu:** hem `.projects__grid` hem sayaç `aria-live`
+taşıyordu. Her ok basışında ekran okuyucu **iki proje kartının tüm içeriğini**
+(başlık, açıklama, etiketler, linkler) baştan okuyor, ardından sayacı da
+okuyordu. Artık tek canlı bölge var ve o da kısa: konumlar + proje adları.
+
+**Ok tuşu kapsamı:** odak bir bağlantı veya form öğesindeyken ok tuşları
+karuseli oynatmıyor — kart içindeki linkler arasında gezinirken beklenmedik
+kaymayı önlemek için (doğrulandı).
+
+**ARIA-in-HTML tuzağı:** slaytlara önce APG'nin önerdiği `role="group"`
+eklendi, ama axe `aria-allowed-role` ihlali verdi — `<article>` üzerinde
+`group` izinli bir rol değil. `role` ezmesi kaldırıldı; `<article>` zaten
+kendi kendine yeten içerik için doğru semantik ve `aria-roledescription`
+global bir öznitelik olduğu için slayt duyurusu korunuyor.
+
+**Doğrulama:** axe-core 3 konfigürasyonda (light/dark × 1440/375) **0 ihlal**.
+Klavye gezintisi baştan sona test edildi.
+
+**scroll-snap değerlendirmesi (uygulanmadı):** CSS `scroll-snap` JS'siz ve
+native klavye/dokunmatik desteği getirir, ama mevcut "2 kart göster, ok
+tuşlarıyla kaydır" tasarımını "hepsi yan yana, yatay kaydır" tasarımına
+çevirir. Bu bir tasarım değişikliği olduğu için Grup 3'e bırakıldı; asıl
+kazancı (mobil swipe) hâlâ eksik ve orada ele alınabilir.
+
+### 6.3 hreflang — mevcut mimaride uygulanamaz
+
+**Eklenmedi.** Ölçümle çıkan kısıt:
+
+| Ölçüm | Sonuç |
+|---|---|
+| Dil değişince URL | **Değişmiyor** — TR ve EN aynı `/` adresinde |
+| JS kapalıyken sayfa içeriği | **0 karakter** — tamamen istemci tarafında render |
+| `<html lang>` | Dinamik güncelleniyor ✅ |
+| `og:locale:alternate` | Zaten var ✅ |
+
+`hreflang`'ın çalışması için **her dilin ayrı bir URL'de** olması şart
+(Google: "each language version must be discoverable at a distinct URL").
+Tek URL'ye `hreflang="en"` ve `hreflang="tr"` birlikte verilirse etiketler
+kendi kendini gösterir; bu SEO faydası sağlamaz ve Search Console'da hatalı
+yapılandırma olarak raporlanır. **Bu yüzden bilerek eklenmedi** — yanlış
+etiket, etiketsizlikten kötüdür.
+
+Ayrıca ölçüm sırasında **daha büyük bir SEO sorunu** ortaya çıktı: JS
+çalıştırmayan crawler'lar sayfayı **tamamen boş** görüyor. Google JS'i
+render ediyor ama LinkedIn, Slack ve benzeri önizleme botları etmiyor (onlar
+için OG etiketleri yeterli, ama arama indeksleme için değil).
+
+**Çözüm seçenekleri (mimari karar gerekiyor):**
+
+1. **Statik ön render (önerilen).** `vite-react-ssg` / `react-snap` gibi bir
+   araçla build sırasında `/index.html` (TR) ve `/en/index.html` (EN)
+   üretilir. Tek hamlede **hem** hreflang'i mümkün kılar **hem** boş-HTML
+   sorununu çözer. Efor: orta.
+2. **`react-router` + dil önekli rotalar** (`/` ve `/en`). hreflang'i mümkün
+   kılar ama sayfa hâlâ istemci tarafında render edildiği için boş-HTML
+   sorunu sürer. Tek başına yarım çözüm.
+3. **Olduğu gibi bırak.** Yalnızca TR içerik indekslenir. Kişisel portfolyo
+   için kabul edilebilir bir kayıp olabilir.
+
+1 numara seçilirse `hreflang` + `x-default` etiketleri doğal olarak eklenir.
+
+## 7. Grup 3 — Tasarım / UX (7 Ağustos 2026)
+
+### 7.1 Tasarım sistemi: spacing ve tipografi ölçeği eklendi
+
+**Önceki durum ölçüldü:** hiçbir ölçek yoktu.
+
+- **13 farklı font boyutu**: 13, 14, 15, 16, 18, 20, 22, 24, 28, 29, 30, 36, 48 px
+- **Spacing 4px grid'e oturmuyordu**: 9, 14, 35, 70, 90 px gibi değerler serpiştirilmişti
+
+**Eklenen token'lar** (`src/index.css`):
+
+| Ölçek | Adım sayısı | Not |
+|---|---|---|
+| `--space-1..30` | 18 | 4px grid |
+| `--text-xs..4xl` | 9 | 13 boyuttan indirildi |
+| `--radius-sm..pill` | 5 | |
+
+**Uygulama:** 63 spacing, 35 `font-size`, 17 `border-radius` bildirimi token'a
+çevrildi. Grid dışı değerler en yakın adıma yuvarlandı:
+`15→16`, `22→20`, `29→28`, `30→28` (tipografi) ·
+`9→8`, `14→16`, `10→12`, `35→36`, `70→72`, `90→88` (spacing).
+
+`.visually-hidden` içindeki `margin: -1px` **bilerek dokunulmadı** — bu bir
+spacing değeri değil, ekran okuyucu kırpma tekniğinin parçası.
+
+**Görsel etki ölçüldü** (önce/sonra piksel karşılaştırması):
+
+| Görünüm | Fark |
+|---|---|
+| 1440 light | %6.37 piksel |
+| 1440 dark | %6.32 piksel |
+| 768 | sayfa yüksekliği 4561 → 4583 px |
+| 375 | sayfa yüksekliği 4980 → 5013 px |
+
+Fark tamamen yuvarlamalardan gelen metin akışı kayması; düzen, hizalama ve
+bileşen yapısı korundu (ekran görüntüleriyle doğrulandı).
+
+### 7.2 Dark/light görsel tutarlılık — ölçülen gerçek kusur
+
+Grup 3'ün en somut bulgusu. İkon kutularının zeminle kontrastı hesaplandı:
+
+| Kutu | Dark zemin (#14151a) | Light zemin (#ffffff) |
+|---|---|---|
+| React `#0d1117` | **1.04:1** ✖ görünmez | 18.92:1 ✅ |
+| Node `#111111` | **1.04:1** ✖ görünmez | 18.88:1 ✅ |
+| Figma `#1e1e1e` | **1.09:1** ✖ görünmez | 16.67:1 ✅ |
+| JS `#f0db4f` | 12.98:1 ✅ | **1.40:1** ✖ görünmez |
+| Redux / VS Code / TS | ✅ | ✅ |
+
+Yani **her iki temada da** bazı kutular zemine karışıyordu — dark'ta üç koyu
+kutu, light'ta sarı JS kutusu. Marka renklerini değiştirmeden çözmek için yeni
+bir `--color-outline` token'ı eklendi (light `#949494` → 3.03:1, dark `#6b6c78`
+→ 3.51:1; ikisi de WCAG 1.4.11'in grafik nesneler için istediği 3:1'i geçiyor).
+`--color-border` bu iş için çok soluktu (1.25:1).
+
+Aynı çerçeve proje ekran görüntülerine de uygulandı: açık renkli görüntüler
+dark temada sınırsız parlak dikdörtgen gibi duruyordu. **Görüntüler
+karartılmadı** — portfolyoda ekran görüntüsünün sadakati önemli; yalnızca sınır
+belirginleştirildi.
+
+### 7.3 Zaten sağlam olanlar (doğrulandı, değiştirilmedi)
+
+| Madde | Ölçüm |
+|---|---|
+| **Skeleton/loading** | Yavaş ağ simülasyonunda (30 kB/s) kart görselleri `skeleton-shine` animasyonuyla bekliyor ✅ |
+| **Mikro-etkileşimler** | 8 öğede transition tanımlı, hepsi ortak 150/250 ms token'ları kullanıyor ✅ |
+| **`prefers-reduced-motion`** | Etkinken `transition-duration` 1e-05s'ye düşüyor ✅ |
+| **404 tasarımı** | Playfair Display (marka başlık fontu), tema duyarlı accent (light `#c81862` / dark `#ff5c9d`), header dahil — jenerik değil ✅ |
+
+**Doğrulama:** `build` ✅ · `lint` 0 hata/uyarı ✅ · `csp:check` ✅ ·
+axe-core 3 konfigürasyonda **0 ihlal** ✅

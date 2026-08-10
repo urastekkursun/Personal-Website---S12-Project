@@ -31,5 +31,13 @@
     "jsx-a11y/role-has-required-aria-props": "error",
     "unicorn/prefer-node-protocol": "off"
   },
+  "overrides": [
+    {
+      "files": ["scripts/**/*.mjs"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ],
   "ignorePatterns": ["dist", "node_modules", "public"]
 }
