@@ -1,5 +1,6 @@
 import { useLanguage } from "../context/LanguageContext";
 import { env } from "../utils/env";
+import { cvUrl, hasCv } from "../utils/cv";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -25,6 +26,18 @@ export default function Footer() {
           {f.title1}{" "}
           <span className="highlight-mark highlight-mark--blue">{f.title2}</span>
         </h2>
+        {/* Ajans sahibi beni birine forward edecek; elinde iletebileceği bir
+            dosya olsun. `content.json` → `cv.file` boşken hiç render edilmez. */}
+        {hasCv && (
+          <a
+            className="footer__cv"
+            href={cvUrl}
+            download
+            aria-label={t.cv.ariaLabel}
+          >
+            {t.cv.label}
+          </a>
+        )}
         <ul className="footer__links">
           {links.map((link) => (
             <li key={link.label}>

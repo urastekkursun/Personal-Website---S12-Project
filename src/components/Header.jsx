@@ -1,11 +1,11 @@
+import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
-  const { t, toggleLanguage, status } = useLanguage();
+  const { t, otherLang, switchPath } = useLanguage();
   const isDark = theme === "dark";
-  const isSwitching = status === "loading";
 
   return (
     <header className="site-header">
@@ -29,21 +29,19 @@ export default function Header() {
           </span>
         </div>
         <span className="header-divider" aria-hidden="true">|</span>
-        <button
-          type="button"
+        {/* Butonun değil BAĞLANTInın olması kasıtlı: dil değişimi artık gerçek
+            bir adrese gidiyor. Böylece orta tık / yeni sekmede aç çalışıyor ve
+            arama motoru crawler'ı iki dil arasındaki ilişkiyi görebiliyor. */}
+        <Link
           className="lang-switch"
-          onClick={toggleLanguage}
-          disabled={isSwitching}
-          aria-busy={isSwitching}
+          to={switchPath}
+          hrefLang={otherLang}
+          rel="alternate"
+          aria-label={t.nav.langSwitchLabel}
         >
-            <span className="lang-switch__target">{t.nav.langTarget}</span>{" "}
-            <span className="lang-switch__action">{t.nav.langAction}</span>
-            {isSwitching && <span className="lang-switch__spinner" aria-hidden="true" />}
-        </button>
-        {/* Dil değişimi ekran okuyucuya da duyurulsun */}
-        <output className="visually-hidden" aria-live="polite">
-          {isSwitching ? t.nav.switching : ""}
-        </output>
+          <span className="lang-switch__target">{t.nav.langTarget}</span>{" "}
+          <span className="lang-switch__action">{t.nav.langAction}</span>
+        </Link>
       </nav>
     </header>
   );

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * index.html içindeki INLINE <script> bloklarının (JSON-LD dahil) sha256
- * hash'ini hesaplar ve `vercel.json` + `netlify.toml` içindeki CSP
+ * Üretilen TÜM HTML dosyalarındaki INLINE <script> bloklarının (JSON-LD dahil)
+ * sha256 hash'ini hesaplar ve `vercel.json` + `netlify.toml` içindeki CSP
  * `script-src` direktifini senkronize eder.
  *
  * Neden gerekli:
@@ -11,9 +11,19 @@
  *   elle tutulduğunda index.html'deki tek bir karakter bile hash'i geçersiz
  *   kılıyor ve bu sessizce bozuluyor.
  *
+ * Neden TÜM dosyalar:
+ *   `scripts/prerender.mjs` dil başına ayrı HTML üretiyor (dist/index.html ve
+ *   dist/en/index.html) ve JSON-LD içerikleri farklı — dolayısıyla hash'leri
+ *   de farklı. Yalnızca dist/index.html taransaydı EN sayfasının yapılandırılmış
+ *   verisi canlıda sessizce bloklanırdı.
+ *
  * Kullanım:
  *   npm run csp:sync    -> config dosyalarını günceller
  *   npm run csp:check   -> senkron değilse hata verir (CI için)
+ *
+ * Bilinen sınırlama: `assertParseSane` açılış/kapanış sayısını doğrular. Sayılar
+ * eşit ama eşleşme kayıksa (ör. iç içe geçmiş bozuk etiketler) teorik olarak
+ * hâlâ yanlış hash üretilebilir.
  *
  * Not: Vercel/Netlify bu config dosyalarını build'den ÖNCE ve repo'dan okur;
  * bu yüzden script build sırasında değil, geliştirme/CI aşamasında çalışır ve
@@ -21,8 +31,8 @@
  */
 
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { resolve, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -66,51 +76,85 @@ function assertParseSane(html, inlineCount) {
   return problems;
 }
 
-function readHtml() {
-  // Servis edilen dosya dist/index.html olduğu için önce onu tercih et.
-  // Vite inline script'leri aynen kopyalıyor, ama bunu varsaymak yerine
-  // gerçek çıktıyı okumak daha güvenli.
-  const built = resolve(root, "dist/index.html");
-  const source = resolve(root, "index.html");
-  if (existsSync(built)) return { path: built, label: "dist/index.html", html: readFileSync(built, "utf8") };
-  return { path: source, label: "index.html (build yok — önce `npm run build` önerilir)", html: readFileSync(source, "utf8") };
+/** dist altındaki tüm index.html'leri toplar (dil başına bir tane). */
+function walkHtml(dir, found = []) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = resolve(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkHtml(path, found);
+    } else if (entry.name.endsWith(".html")) {
+      found.push(path);
+    }
+  }
+  return found;
 }
 
-function computeHashes(html) {
-  const hashes = [];
+/**
+ * Servis edilen dosyalar dist altındakiler olduğu için önce onları tercih et.
+ * Vite inline script'leri aynen kopyalıyor ama bunu varsaymak yerine gerçek
+ * çıktıyı okumak daha güvenli.
+ */
+function readHtmlFiles() {
+  const dist = resolve(root, "dist");
+  if (existsSync(dist)) {
+    const files = walkHtml(dist);
+    if (files.length) return files;
+  }
+  console.warn("! dist bulunamadı, kaynak index.html kullanılıyor. Önce `npm run build` önerilir.");
+  return [resolve(root, "index.html")];
+}
+
+const files = readHtmlFiles();
+const hashes = new Set();
+const parseProblems = [];
+
+for (const file of files) {
+  const html = readFileSync(file, "utf8");
+  const fileHashes = [];
+
   for (const [, body] of html.matchAll(INLINE_SCRIPT_RE)) {
     // CSP hash'i script elementinin metin içeriği üzerinden, hiçbir kırpma
     // yapılmadan hesaplanır.
-    hashes.push("sha256-" + createHash("sha256").update(body, "utf8").digest("base64"));
+    fileHashes.push("sha256-" + createHash("sha256").update(body, "utf8").digest("base64"));
   }
-  return hashes;
+
+  const problems = assertParseSane(html, fileHashes.length);
+  if (problems.length) {
+    parseProblems.push({ file: relative(root, file), problems });
+    continue;
+  }
+
+  console.log(`${relative(root, file)} — ${fileHashes.length} inline script`);
+  fileHashes.forEach((h) => {
+    console.log(`  ${h}`);
+    hashes.add(h);
+  });
 }
-
-function buildDirective(hashes) {
-  return "script-src 'self'" + hashes.map((h) => ` '${h}'`).join("");
-}
-
-const mode = process.argv.includes("--check") ? "check" : "write";
-const { label, html } = readHtml();
-const hashes = computeHashes(html);
-const directive = buildDirective(hashes);
-
-console.log(`Kaynak: ${label}`);
-console.log(`Inline script sayısı: ${hashes.length}`);
-hashes.forEach((h) => console.log(`  ${h}`));
 
 // Ayrıştırma güvenilir değilse HİÇBİR ŞEY yazma — yanlış hash yazmak,
 // hash'i hiç güncellememekten daha tehlikeli çünkü sonraki check'ler yeşil kalır.
-const parseProblems = assertParseSane(html, hashes.length);
 if (parseProblems.length) {
   console.error("\n✖ HTML güvenilir şekilde ayrıştırılamadı:");
-  parseProblems.forEach((p) => console.error(`  - ${p}`));
-  console.error("  Config dosyalarına DOKUNULMADI. index.html'deki <script> etiketlerini kontrol et.");
+  for (const { file, problems } of parseProblems) {
+    console.error(`  ${file}`);
+    problems.forEach((p) => console.error(`    - ${p}`));
+  }
+  console.error("  Config dosyalarına DOKUNULMADI. <script> etiketlerini kontrol et.");
   process.exit(1);
 }
 
-let changed = [];
-let missing = [];
+// Sıralama determinizm için: dosya okuma sırası değişse de direktif aynı kalsın,
+// yoksa `csp:check` sebepsiz yere kırmızıya döner.
+const directive =
+  "script-src 'self'" +
+  [...hashes]
+    .toSorted()
+    .map((h) => ` '${h}'`)
+    .join("");
+
+const mode = process.argv.includes("--check") ? "check" : "write";
+const changed = [];
+const missing = [];
 
 for (const file of CONFIG_FILES) {
   const path = resolve(root, file);
@@ -123,7 +167,8 @@ for (const file of CONFIG_FILES) {
     missing.push(`${file} (CSP içinde \`script-src 'self'\` bulunamadı)`);
     continue;
   }
-  const after = before.replace(SCRIPT_SRC_RE, directive);
+  // Değiştirme metni `$` içerebileceği için fonksiyon biçimi kullanılıyor.
+  const after = before.replace(SCRIPT_SRC_RE, () => directive);
   if (after !== before) {
     changed.push(file);
     if (mode === "write") writeFileSync(path, after);

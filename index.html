@@ -18,21 +18,25 @@
   Fontlar self-host edildiği için CSP'de artık hiçbir dış origin istisnası
   yok: style-src, font-src ve connect-src yalnızca 'self'.
   Deploy sonrası doğrulama: https://securityheaders.com
+
+  DİL VE META HAKKINDA NOT
+  ------------------------
+  Aşağıdaki PRERENDER:META bloğu build sonrası `scripts/prerender.mjs`
+  tarafından dil başına YENİDEN ÜRETİLİR:
+
+    dist/index.html     -> TR
+    dist/en/index.html  -> EN
+
+  Buradaki değerler TR karşılığıdır ve `npm run dev` sırasında geçerlidir.
+  Tek doğruluk kaynağı `src/data/content.json` içindeki `meta` bloğudur —
+  metni burada değil orada düzenle, sonra `npm run build` çalıştır.
+
+  Bloğu düzenlersen CSP hash'i değişir: `npm run build && npm run csp:sync`.
 -->
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Temel SEO -->
-    <title>Uras Tekkursun — Full-stack Developer</title>
-    <meta
-      name="description"
-      content="Uras Tekkursun'ün kişisel portfolyo sitesi. React, React Native ve Node.js ile web ve mobil uygulamalar geliştiren full-stack developer. Projeler, yetenekler ve iletişim bilgileri."
-    />
-    <meta name="author" content="Uras Tekkursun" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://fsweb-portfolio.vercel.app/" />
 
     <!-- Tarayıcı arayüzü / ikonlar -->
     <meta name="theme-color" content="#ffffff" />
@@ -40,56 +44,38 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/og-image.jpg" />
 
-    <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack) -->
+    <!-- Fontlar self-host ediliyor (src/assets/fonts/), @font-face tanımları
+         src/index.css içinde. Google Fonts'a giden istek kalmadı. -->
+
+    <!--PRERENDER:META-->
+    <title>Uras Tekkursun — Full-stack Developer</title>
+    <meta name="description" content="React, React Native ve Node.js ile web ve mobil uygulamalar geliştiren full-stack developer. Şu an proje bazlı iş alıyorum. Projeler, yetenekler ve iletişim bilgileri." />
+    <meta name="author" content="Uras Tekkursun" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://fsweb-portfolio.vercel.app/" />
+    <link rel="alternate" hreflang="tr" href="https://fsweb-portfolio.vercel.app/" />
+    <link rel="alternate" hreflang="en" href="https://fsweb-portfolio.vercel.app/en" />
+    <link rel="alternate" hreflang="x-default" href="https://fsweb-portfolio.vercel.app/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Uras Tekkursun" />
     <meta property="og:locale" content="tr_TR" />
     <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:title" content="Uras Tekkursun — Full-stack Developer" />
-    <meta
-      property="og:description"
-      content="React, React Native ve Node.js ile web ve mobil uygulamalar geliştiren full-stack developer. Projelerime göz at."
-    />
+    <meta property="og:description" content="React, React Native ve Node.js ile web ve mobil uygulamalar geliştiriyorum. Şu an proje bazlı iş alıyorum." />
     <meta property="og:url" content="https://fsweb-portfolio.vercel.app/" />
     <meta property="og:image" content="https://fsweb-portfolio.vercel.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Uras Tekkursun'ün portre fotoğrafı" />
-
-    <!-- Twitter / X Card -->
+    <meta property="og:image:alt" content="Uras Tekkursun&#39;ün portre fotoğrafı" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Uras Tekkursun — Full-stack Developer" />
-    <meta
-      name="twitter:description"
-      content="React, React Native ve Node.js ile web ve mobil uygulamalar geliştiren full-stack developer. Projelerime göz at."
-    />
+    <meta name="twitter:description" content="React, React Native ve Node.js ile web ve mobil uygulamalar geliştiriyorum. Şu an proje bazlı iş alıyorum." />
     <meta name="twitter:image" content="https://fsweb-portfolio.vercel.app/og-image.jpg" />
-    <meta name="twitter:image:alt" content="Uras Tekkursun'ün portre fotoğrafı" />
-
-    <!-- Fontlar self-host ediliyor (src/assets/fonts/), @font-face tanımları
-         src/index.css içinde. Google Fonts'a giden istek kalmadı. -->
-
-    <!-- Arama motorları için yapılandırılmış veri -->
+    <meta name="twitter:image:alt" content="Uras Tekkursun&#39;ün portre fotoğrafı" />
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Uras Tekkursun",
-        "url": "https://fsweb-portfolio.vercel.app/",
-        "image": "https://fsweb-portfolio.vercel.app/og-image.jpg",
-        "jobTitle": "Full-stack Developer",
-        "email": "mailto:urastekkursun@gmail.com",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "İzmir",
-          "addressCountry": "TR"
-        },
-        "sameAs": [
-          "https://github.com/urastekkursun",
-          "https://www.linkedin.com/in/urastekkursun/"
-        ]
-      }
+{"@context":"https://schema.org","@type":"Person","name":"Uras Tekkursun","url":"https://fsweb-portfolio.vercel.app/","image":"https://fsweb-portfolio.vercel.app/og-image.jpg","jobTitle":"Full-stack Developer","email":"mailto:urastekkursun@gmail.com","address":{"@type":"PostalAddress","addressLocality":"İzmir","addressCountry":"TR"},"sameAs":["https://github.com/urastekkursun","https://www.linkedin.com/in/urastekkursun/"]}
     </script>
+    <!--/PRERENDER:META-->
   </head>
   <body>
     <div id="root"></div>

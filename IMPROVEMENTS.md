@@ -512,6 +512,14 @@ sürüm aynı anda, baytlar CDP `Network` olaylarıyla sayılarak:
 | CLS | 0.0301 | 0.0288 | ~aynı |
 | axe-core ihlali | 0 | 0 | regresyon yok |
 
+> **Sonraki güncelleme (11 Ağustos 2026).** Dilin URL'e taşınması için
+> `react-router-dom` eklendi ve JS bundle **84.1 kB → 98.2 kB gzip** (+14.1 kB)
+> oldu. Bilinçli bir takas: bu satırdaki −15.2 kB'lik kazancın neredeyse
+> tamamı geri verildi, karşılığında paylaşılabilir `/en` adresi ve dil başına
+> statik OG/hreflang alındı — bunlar olmadan yurt dışına gönderilen linkler
+> yanlış dilde açılıyordu. Grup 2'de vaka sayfaları eklenirken route bazlı
+> kod bölme (`React.lazy`) ile bu maliyetin bir kısmı geri alınabilir.
+
 ### 5.1 Fontlar self-host edildi
 
 Inter + Playfair Display woff2 dosyaları `src/assets/fonts/`'a alındı,

@@ -6,7 +6,39 @@
   command = "npm run build"
   publish = "dist"
 
-# SPA: bilinmeyen path'ler index.html'e düşsün (uygulama içi NotFound devreye girer)
+# SPA fallback — SIRA ÖNEMLİ, kurallar yukarıdan aşağı değerlendirilir.
+#
+# En özelden en genele: önce vaka sayfaları kendi statik HTML'lerine, sonra
+# `/en` ve altı EN kabuğuna, en sonda geri kalan her şey TR kabuğuna.
+#
+# Genel `/*` kuralı EN SONDA kalmalı: başta olsaydı /en de Türkçe HTML alırdı
+# ve WhatsApp/LinkedIn önizlemesi yanlış dilde görünürdü — link önizleme
+# botları JS çalıştırmadığı için bunu uygulama içinden düzeltmek mümkün değil.
+# Aynı mantık vaka sayfaları için de geçerli: kendi statik dosyasına
+# düşmezlerse önizlemede ana sayfanın başlığı çıkar.
+#
+# Aynı sıralama vercel.json'da ve vite.config.js'teki preview middleware'inde
+# de var; birini değiştirirsen üçünü birlikte değiştir.
+[[redirects]]
+  from = "/en/case/:slug"
+  to = "/en/case/:slug/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/vaka/:slug"
+  to = "/vaka/:slug/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/en"
+  to = "/en/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/en/*"
+  to = "/en/index.html"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -22,7 +54,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-6KbTqVCm9MGU/HEjJGIMwrzxcVWkLpijh6wGAicBzCE='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://reqres.in; frame-ancestors 'none'; frame-src 'none'; worker-src 'none'; media-src 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-QhIPIX9HzrvzX1XN+xsWyxnsqcS5BeV8qLNPOZxJNMY=' 'sha256-ghwSQaUGIe5IDDux2PkbQI66PzA3sWEOuji87cI3FIQ='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://reqres.in; frame-ancestors 'none'; frame-src 'none'; worker-src 'none'; media-src 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"

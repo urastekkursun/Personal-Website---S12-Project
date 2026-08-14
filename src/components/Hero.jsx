@@ -1,4 +1,5 @@
 import { useLanguage } from "../context/LanguageContext";
+import { cvUrl, hasCv } from "../utils/cv";
 import Header from "./Header";
 import urasPhoto from "../assets/uras-hero.webp";
 import { FaLinkedinIn, FaGithub } from "react-icons/fa";
@@ -14,6 +15,12 @@ export default function Hero() {
       <Header />
       <div className="hero__content">
         <div className="hero__text">
+          {/* Metin iki dilde de content.json'dan gelir; fiyat bilgisi
+              bilinçli olarak yok. */}
+          <p className="hero__availability">
+            <span className="hero__availability-dot" aria-hidden="true" />
+            {t.hero.availability}
+          </p>
           <p className="hero__greeting">{t.hero.greeting} 👋</p>
           <h1 className="hero__heading">
             <span className="highlight-mark highlight-mark--pink">
@@ -50,6 +57,13 @@ export default function Hero() {
             {t.hero.inviteText}{" "}
             <a href={`mailto:${t.hero.email}`}>{t.hero.email}</a>
           </p>
+          {hasCv && (
+            <p className="hero__cv">
+              <a href={cvUrl} download aria-label={t.cv.ariaLabel}>
+                {t.cv.label}
+              </a>
+            </p>
+          )}
         </div>
 
         <figure className="hero__photo">

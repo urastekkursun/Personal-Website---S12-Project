@@ -3,14 +3,20 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/en/case/:slug", "destination": "/en/case/:slug/index.html" },
+    { "source": "/vaka/:slug", "destination": "/vaka/:slug/index.html" },
+    { "source": "/en", "destination": "/en/index.html" },
+    { "source": "/en/(.*)", "destination": "/en/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-6KbTqVCm9MGU/HEjJGIMwrzxcVWkLpijh6wGAicBzCE='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://reqres.in; frame-ancestors 'none'; frame-src 'none'; worker-src 'none'; media-src 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' 'sha256-QhIPIX9HzrvzX1XN+xsWyxnsqcS5BeV8qLNPOZxJNMY=' 'sha256-ghwSQaUGIe5IDDux2PkbQI66PzA3sWEOuji87cI3FIQ='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://reqres.in; frame-ancestors 'none'; frame-src 'none'; worker-src 'none'; media-src 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
         },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
